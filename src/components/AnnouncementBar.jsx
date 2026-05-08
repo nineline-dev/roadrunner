@@ -1,6 +1,6 @@
 export default function AnnouncementBar({ onDismiss }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] h-10 bg-gold flex items-center justify-center px-4">
+    <div className="fixed top-0 left-0 right-0 z-[60] h-12 bg-gold flex items-center justify-center px-4">
       <p className="font-body text-white text-xs sm:text-sm font-medium text-center leading-tight">
         <span className="font-semibold">Every shoot includes:</span>
         {' '}HDR Photos · 3–5 Drone Shots · Free Virtual Staging · 2D Floor Plan · Marketing Materials

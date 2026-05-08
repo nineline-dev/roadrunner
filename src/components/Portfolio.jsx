@@ -69,7 +69,7 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
       </button>
 
       <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors"
+        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors z-10"
         onClick={(e) => { e.stopPropagation(); onPrev() }}
         aria-label="Previous"
       >
@@ -98,7 +98,7 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
       )}
 
       <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors"
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors z-10"
         onClick={(e) => { e.stopPropagation(); onNext() }}
         aria-label="Next"
       >

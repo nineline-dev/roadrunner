@@ -33,11 +33,11 @@ export default function Nav({ bannerOffset = false }) {
     <>
       <nav
         className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
-          bannerOffset ? 'top-10' : 'top-0'
+          bannerOffset ? 'top-12' : 'top-0'
         } ${
           scrolled
             ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-border'
-            : 'bg-transparent'
+            : 'bg-gradient-to-b from-black/40 to-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
