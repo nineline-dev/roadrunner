@@ -39,7 +39,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <a href="#hero" className="font-display font-bold text-xl tracking-[0.2em] text-text-primary hover:text-gold transition-colors">
-              AOTA MEDIA
+              ROADRUNNER MEDIA
             </a>
             <p className="font-body text-text-secondary text-sm mt-3 leading-relaxed max-w-xs">
               Premium real estate photography & videography serving Phoenix, AZ and surrounding areas.
@@ -121,7 +121,7 @@ export default function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-text-secondary text-sm">
-            © 2026 Aota Media · Phoenix, AZ
+            © 2026 Roadrunner Media · Phoenix, AZ
           </p>
           <p className="font-body text-text-secondary text-xs">
             All rights reserved.

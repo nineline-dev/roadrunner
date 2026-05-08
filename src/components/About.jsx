@@ -7,7 +7,7 @@ export default function About() {
     <section id="about" className="py-24 px-6 bg-white">
       <div className="max-w-3xl mx-auto">
         <div ref={sectionRef} className="fade-up">
-          <p className="section-eyebrow mb-4">About</p>
+          <p className="section-eyebrow mb-4">Why Roadrunner Media</p>
           <h2 className="section-title mb-8">
             Real Estate Media,
             <br />
@@ -15,13 +15,13 @@ export default function About() {
           </h2>
           <div className="space-y-5 font-body text-text-secondary text-lg leading-relaxed">
             <p>
-              Hey, I'm Colin — founder of Aota Media and a Phoenix-based real estate photographer with a passion for making properties look their absolute best.
+              Roadrunner Media was built for one reason: Phoenix agents deserve listing media that actually sells homes.
             </p>
             <p>
-              I started Aota Media because I saw too many listings with dark, blurry photos that failed to do justice to beautiful homes. Great photography isn't just aesthetics — it's the difference between a listing that sits and one that sells.
+              Too many great properties were getting lost behind dark, blurry photos. We exist to change that — bringing professional HDR photography, drone work, virtual staging, and floor plans to every listing, no matter the price point.
             </p>
             <p>
-              Over 500 properties shot across the Valley, FAA-licensed for drone work, and delivered within 24 hours — every time.
+              500+ properties photographed across the Valley. FAA-licensed drone operations. Every order delivered within 24 hours, guaranteed.
             </p>
           </div>
         </div>

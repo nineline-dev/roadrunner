@@ -4,48 +4,93 @@ import { useScrollObserver } from '../hooks/useScrollObserver'
 
 const SERVICES = ['Photos', 'Video', 'Headshots', 'Logos']
 
+const serviceFeatures = {
+  Photos: [
+    'HDR Photography',
+    'Drone / Neighborhood Shots (3–5)',
+    'Virtual Staging (FREE)',
+    '2D Floor Plan',
+    'Marketing Materials',
+    'Twilight Session',
+    'Video Walk-Through Add-On',
+    'Social Media Edits',
+  ],
+  Video: [
+    'Interior Walk-Through Video',
+    '4K Resolution',
+    'Aerial Drone Footage',
+    'Licensed Music',
+    'Branded Intro/Outro',
+    'Color Grading',
+    'Voiceover Option',
+    'MLS + Social Versions',
+  ],
+  Headshots: [
+    '10 Edited Photos',
+    '25 Edited Photos',
+    'Outfit Changes',
+    'Multiple Locations',
+    'LinkedIn + Social Crops',
+    'Background Color Options',
+    'Team Composite Photo',
+    'Priority Delivery',
+  ],
+  Logos: [
+    '3 Initial Concepts',
+    '5 Initial Concepts',
+    'Revision Rounds (2)',
+    'Unlimited Revisions',
+    'Full Brand Guide',
+    'Business Card Design',
+    'Email Signature + Social Kit',
+    'Complete Brand Strategy',
+  ],
+}
+
 const pricingData = {
   Photos: [
     {
       name: 'Essential',
-      price: '$149',
-      duration: 'Up to 25 photos',
+      price: '$250',
+      duration: 'Standard shoot',
       popular: false,
-      features: [
-        'Up to 2,000 sq ft',
-        '25 HDR photos',
-        '24-hour delivery',
-        'Online gallery',
-        'MLS-ready files',
+      included: [
+        'HDR Photography',
+        'Drone / Neighborhood Shots (3–5)',
+        'Virtual Staging (FREE)',
+        '2D Floor Plan',
+        'Marketing Materials',
       ],
     },
     {
       name: 'Standard',
-      price: '$229',
-      duration: 'Up to 40 photos',
+      price: '$350',
+      duration: 'Standard + twilight',
       popular: true,
-      features: [
-        'Up to 3,500 sq ft',
-        '40 HDR photos',
-        'Twilight shot included',
-        '24-hour delivery',
-        'Online gallery + download',
-        'Aerial drone photos (5)',
+      included: [
+        'HDR Photography',
+        'Drone / Neighborhood Shots (3–5)',
+        'Virtual Staging (FREE)',
+        '2D Floor Plan',
+        'Marketing Materials',
+        'Twilight Session',
+        'Social Media Edits',
       ],
     },
     {
       name: 'Premium',
-      price: '$349',
-      duration: 'Up to 60 photos',
+      price: '$550',
+      duration: 'Full package',
       popular: false,
-      features: [
-        'Any size home',
-        '60 HDR photos',
-        'Twilight & blue hour shots',
-        'Aerial drone photos (10)',
-        'Floor plan included',
-        'Social media edits',
-        '24-hour delivery',
+      included: [
+        'HDR Photography',
+        'Drone / Neighborhood Shots (3–5)',
+        'Virtual Staging (FREE)',
+        '2D Floor Plan',
+        'Marketing Materials',
+        'Twilight Session',
+        'Video Walk-Through Add-On',
+        'Social Media Edits',
       ],
     },
   ],
@@ -55,12 +100,10 @@ const pricingData = {
       price: '$299',
       duration: '1–2 min walk-through',
       popular: false,
-      features: [
-        'Interior walk-through video',
-        '1080p resolution',
-        'Background music',
-        '48-hour delivery',
-        'Optimized for social media',
+      included: [
+        'Interior Walk-Through Video',
+        'Licensed Music',
+        'MLS + Social Versions',
       ],
     },
     {
@@ -68,14 +111,13 @@ const pricingData = {
       price: '$499',
       duration: '2–3 min cinematic',
       popular: true,
-      features: [
-        'Cinematic walk-through',
-        '4K resolution',
-        'Aerial drone footage',
-        'Licensed music',
-        'Branded intro/outro',
-        '48-hour delivery',
-        'MLS + social versions',
+      included: [
+        'Interior Walk-Through Video',
+        '4K Resolution',
+        'Aerial Drone Footage',
+        'Licensed Music',
+        'Branded Intro/Outro',
+        'MLS + Social Versions',
       ],
     },
     {
@@ -83,15 +125,15 @@ const pricingData = {
       price: '$799',
       duration: '3–5 min showcase',
       popular: false,
-      features: [
-        'Full cinematic production',
-        '4K + color grading',
-        'Extended drone sequences',
-        'Voiceover option',
-        'Custom music licensing',
-        'Agent brand integration',
-        '72-hour delivery',
-        'All format versions',
+      included: [
+        'Interior Walk-Through Video',
+        '4K Resolution',
+        'Aerial Drone Footage',
+        'Licensed Music',
+        'Branded Intro/Outro',
+        'Color Grading',
+        'Voiceover Option',
+        'MLS + Social Versions',
       ],
     },
   ],
@@ -101,12 +143,10 @@ const pricingData = {
       price: '$199',
       duration: '30 min session',
       popular: false,
-      features: [
-        '1 outfit change',
-        '10 edited photos',
-        '1 location',
-        '48-hour delivery',
-        'Online gallery',
+      included: [
+        '10 Edited Photos',
+        'Outfit Changes',
+        'Priority Delivery',
       ],
     },
     {
@@ -114,27 +154,27 @@ const pricingData = {
       price: '$349',
       duration: '60 min session',
       popular: true,
-      features: [
-        'Up to 2 outfit changes',
-        '25 edited photos',
-        '2 locations',
-        '48-hour delivery',
-        'LinkedIn + social crops',
-        'Background color options',
+      included: [
+        '10 Edited Photos',
+        '25 Edited Photos',
+        'Outfit Changes',
+        'Multiple Locations',
+        'LinkedIn + Social Crops',
+        'Background Color Options',
+        'Priority Delivery',
       ],
     },
     {
       name: 'Team Package',
       price: '$199/person',
-      duration: 'Full team',
+      duration: '4+ people',
       popular: false,
-      features: [
-        '4+ people',
-        '10 edited photos each',
-        'Consistent background',
-        'Priority delivery',
-        'Team composite photo',
-        'Bulk pricing available',
+      included: [
+        '10 Edited Photos',
+        'Outfit Changes',
+        'Background Color Options',
+        'Team Composite Photo',
+        'Priority Delivery',
       ],
     },
   ],
@@ -144,12 +184,9 @@ const pricingData = {
       price: '$299',
       duration: '5–7 business days',
       popular: false,
-      features: [
-        '3 initial concepts',
-        '2 revision rounds',
-        'Final files: PNG, SVG',
-        'Transparent background',
-        'Color + B&W versions',
+      included: [
+        '3 Initial Concepts',
+        'Revision Rounds (2)',
       ],
     },
     {
@@ -157,14 +194,13 @@ const pricingData = {
       price: '$549',
       duration: '7–10 business days',
       popular: true,
-      features: [
-        '5 initial concepts',
-        'Unlimited revisions',
-        'Full brand guide',
-        'Business card design',
-        'Email signature',
-        'Social profile kit',
-        'All file formats',
+      included: [
+        '3 Initial Concepts',
+        '5 Initial Concepts',
+        'Unlimited Revisions',
+        'Full Brand Guide',
+        'Business Card Design',
+        'Email Signature + Social Kit',
       ],
     },
     {
@@ -172,20 +208,38 @@ const pricingData = {
       price: '$999',
       duration: '10–14 business days',
       popular: false,
-      features: [
-        'Complete brand strategy',
-        'Logo + submark + icon',
-        'Full style guide',
-        'Stationery suite',
-        'Marketing template pack',
-        'Ongoing support (30 days)',
-        'All file formats',
+      included: [
+        '3 Initial Concepts',
+        '5 Initial Concepts',
+        'Unlimited Revisions',
+        'Full Brand Guide',
+        'Business Card Design',
+        'Email Signature + Social Kit',
+        'Complete Brand Strategy',
       ],
     },
   ],
 }
 
-function PriceCard({ pkg, bookingUrl }) {
+function CheckIcon() {
+  return (
+    <svg className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+    </svg>
+  )
+}
+
+function XIcon() {
+  return (
+    <svg className="w-4 h-4 text-text-secondary/30 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  )
+}
+
+function PriceCard({ pkg, allFeatures, bookingUrl }) {
+  const includedSet = new Set(pkg.included)
+
   return (
     <div
       className={`relative flex flex-col bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
@@ -217,14 +271,23 @@ function PriceCard({ pkg, bookingUrl }) {
         </div>
 
         <ul className="space-y-3 flex-1 mb-8">
-          {pkg.features.map((feature) => (
-            <li key={feature} className="flex items-start gap-3">
-              <svg className="w-4 h-4 text-gold mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              <span className="font-body text-sm text-text-secondary leading-snug">{feature}</span>
-            </li>
-          ))}
+          {allFeatures.map((feature) => {
+            const included = includedSet.has(feature)
+            return (
+              <li key={feature} className="flex items-start gap-3">
+                {included ? <CheckIcon /> : <XIcon />}
+                <span
+                  className={`font-body text-sm leading-snug ${
+                    included
+                      ? 'text-text-secondary'
+                      : 'text-text-secondary/35 line-through'
+                  }`}
+                >
+                  {feature}
+                </span>
+              </li>
+            )
+          })}
         </ul>
 
         <a
@@ -272,10 +335,9 @@ export default function Pricing() {
           </p>
         </div>
 
-        {/* Recommendation nudge */}
         <p className="text-center font-body text-text-secondary text-sm mt-6 mb-2">
           Most Phoenix agents start with{' '}
-          <span className="text-text-primary font-medium">Standard Photos</span>
+          <span className="text-text-primary font-medium">Essential Photos</span>
           {' '}— add Video for listings over $500k.
         </p>
 
@@ -296,17 +358,20 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* Package cards — fade transition on tab switch */}
         <div
           className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-opacity duration-150"
           style={{ opacity: isTransitioning ? 0 : 1 }}
         >
           {pricingData[activeService].map((pkg) => (
-            <PriceCard key={pkg.name} pkg={pkg} bookingUrl={ARYEO_BOOKING_URL} />
+            <PriceCard
+              key={pkg.name}
+              pkg={pkg}
+              allFeatures={serviceFeatures[activeService]}
+              bookingUrl={ARYEO_BOOKING_URL}
+            />
           ))}
         </div>
 
-        {/* Custom quote */}
         <p className="text-center mt-10 font-body text-text-secondary">
           Need something custom?{' '}
           <a

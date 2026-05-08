@@ -7,7 +7,7 @@ const navLinks = [
   { label: 'Pricing', href: '#pricing' },
 ]
 
-export default function Nav() {
+export default function Nav({ bannerOffset = false }) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -32,7 +32,9 @@ export default function Nav() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
+          bannerOffset ? 'top-10' : 'top-0'
+        } ${
           scrolled
             ? 'bg-white/95 backdrop-blur-sm shadow-sm border-b border-border'
             : 'bg-transparent'
@@ -54,7 +56,7 @@ export default function Nav() {
                 className="h-7 w-auto mix-blend-multiply"
               />
             )}
-            AOTA MEDIA
+            ROADRUNNER MEDIA
           </a>
 
           {/* Desktop links */}
@@ -103,7 +105,7 @@ export default function Nav() {
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-border">
           <span className="font-display font-bold text-xl tracking-[0.2em] text-text-primary">
-            AOTA MEDIA
+            ROADRUNNER MEDIA
           </span>
           <button
             onClick={() => setMenuOpen(false)}
