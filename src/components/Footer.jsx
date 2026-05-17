@@ -124,7 +124,15 @@ export default function Footer() {
             © 2026 Roadrunner Media · Phoenix, AZ
           </p>
           <p className="font-body text-text-secondary text-xs">
-            All rights reserved.
+            All rights reserved. · Site by{' '}
+            <a
+              href="https://9line.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gold transition-colors"
+            >
+              9line.dev
+            </a>
           </p>
         </div>
       </div>
