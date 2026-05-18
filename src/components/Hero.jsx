@@ -24,7 +24,7 @@ export default function Hero() {
       {/* Right — Content */}
       <div className="flex-1 bg-bg-warm flex items-center justify-start px-6 sm:px-8 md:px-12 lg:px-16 py-16 lg:py-0">
         <div className="max-w-lg w-full">
-          <p className="section-eyebrow mb-5">Phoenix Real Estate Media</p>
+          <p className="section-eyebrow mb-5">Phoenix Real Estate Photography & Videography</p>
 
           <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-text-primary leading-[1.05] mb-6">
             Listings That
@@ -56,7 +56,7 @@ export default function Hero() {
             </a>
           </div>
           <p className="font-body text-text-secondary/60 text-xs mt-4">
-            No payment required to schedule · 2-min booking
+            24-hr delivery · No payment required · 2-min booking
           </p>
         </div>
       </div>

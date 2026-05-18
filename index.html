@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Roadrunner Media — Premium Real Estate Photography & Videography in Phoenix, AZ. Every shoot includes HDR photos, drone shots, virtual staging & floor plan. From $250." />
     <title>Roadrunner Media | Real Estate Photography & Videography · Phoenix, AZ</title>
@@ -29,28 +33,106 @@
     <meta name="twitter:image" content="https://roadrunner.media/images/_DSC5681.jpg" />
     <meta name="twitter:image:alt" content="Luxury property photographed by Roadrunner Media, Phoenix AZ" />
 
-    <!-- Schema.org LocalBusiness -->
+    <!-- Schema.org LocalBusiness + PhotographyStudio -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": ["LocalBusiness", "PhotographyStudio"],
       "name": "Roadrunner Media",
       "description": "Premium real estate photography, videography, and listing media serving Phoenix, AZ and surrounding areas.",
       "url": "https://roadrunner.media",
-      "logo": "https://roadrunner.media/images/logo.png",
-      "image": "https://roadrunner.media/images/_DSC5681.jpg",
       "email": "colin@roadrunner.media",
+      "image": "https://roadrunner.media/images/_DSC5681.jpg",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://roadrunner.media/images/logo.png"
+      },
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Phoenix",
         "addressRegion": "AZ",
         "addressCountry": "US"
       },
-      "areaServed": {
-        "@type": "State",
-        "name": "Arizona"
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 33.4484,
+        "longitude": -112.0740
       },
+      "areaServed": [
+        { "@type": "City", "name": "Phoenix" },
+        { "@type": "City", "name": "Scottsdale" },
+        { "@type": "City", "name": "Tempe" },
+        { "@type": "City", "name": "Chandler" },
+        { "@type": "City", "name": "Gilbert" },
+        { "@type": "City", "name": "Mesa" },
+        { "@type": "City", "name": "Glendale" }
+      ],
       "priceRange": "$$",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "5",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Sarah M." },
+          "reviewBody": "Colin delivered absolutely stunning photos of my listing within 24 hours. The quality blew my clients away.",
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "James R." },
+          "reviewBody": "The video tour felt like something out of a luxury magazine. Worth every penny.",
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Diana K." },
+          "reviewBody": "Fast, professional, and the results speak for themselves. My go-to photographer in Phoenix.",
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Mark T." },
+          "reviewBody": "The headshot session was so relaxed and fun. Highly recommend to any agent.",
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Priya S." },
+          "reviewBody": "We hired Roadrunner Media for our whole team's headshots and the logo redesign. The consistency and quality across everything was incredible.",
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+        }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Real Estate Media Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Real Estate Photography", "description": "Magazine-quality HDR interior and exterior photography with drone aerials, virtual staging, 2D floor plans, and marketing materials." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "250", "maxPrice": "550" }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Real Estate Videography", "description": "Cinematic 4K walk-through videos with aerial drone footage, licensed music, branded intro/outro, and MLS-ready delivery." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "299", "maxPrice": "799" }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Agent Headshots", "description": "Professional headshots for real estate agents with edited photos, social media crops, and priority delivery." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "199", "maxPrice": "349" }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Logo & Brand Design", "description": "Custom brand identities for agents and brokerages including logos, color systems, and brand guides." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "299", "maxPrice": "999" }
+          }
+        ]
+      },
       "sameAs": [
         "https://instagram.com/roadrunnermediaphx",
         "https://youtube.com/@roadrunnermediaphx",
@@ -58,6 +140,19 @@
       ]
     }
     </script>
+
+    <!-- WebSite schema for Sitelinks eligibility -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Roadrunner Media",
+      "url": "https://roadrunner.media"
+    }
+    </script>
+
+    <!-- LCP hero image preload — browser discovers it before JS executes -->
+    <link rel="preload" as="image" href="/images/_DSC5681.jpg" fetchpriority="high" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

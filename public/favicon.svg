@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#C9973A" rx="4"/>
-  <text x="16" y="22" font-family="serif" font-size="16" font-weight="700" fill="white" text-anchor="middle">A</text>
+  <rect width="32" height="32" fill="#C9973A" rx="5"/>
+  <text
+    x="16"
+    y="23"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="19"
+    font-weight="700"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="-0.5"
+  >R</text>
 </svg>

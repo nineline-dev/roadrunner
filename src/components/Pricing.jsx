@@ -381,6 +381,22 @@ export default function Pricing() {
             Let's talk.
           </a>
         </p>
+
+        {/* Semantic service-area + delivery FAQ — aids AI citation and local SEO */}
+        <div className="mt-16 pt-10 border-t border-border grid sm:grid-cols-2 gap-8 max-w-3xl mx-auto text-sm font-body">
+          <div>
+            <h3 className="font-semibold text-text-primary mb-2">What areas do you serve?</h3>
+            <p className="text-text-secondary leading-relaxed">
+              We cover Phoenix, Scottsdale, Tempe, Mesa, Chandler, Gilbert, Glendale, Peoria, and the greater Maricopa County Valley. Travel outside this area — just ask.
+            </p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-text-primary mb-2">How fast will I get my photos?</h3>
+            <p className="text-text-secondary leading-relaxed">
+              Every photo package includes guaranteed 24-hour delivery via your ARYEO media portal — no matter the package tier.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   )

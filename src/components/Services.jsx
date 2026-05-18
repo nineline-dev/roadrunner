@@ -8,7 +8,7 @@ const services = [
   },
   {
     title: 'Video Tours',
-    description: 'Cinematic walk-through videos and aerial drone footage that give buyers an immersive first look.',
+    description: 'Cinematic real estate videography — walk-through videos, aerial drone footage, and 4K tours that give buyers an immersive first look.',
     href: '#pricing',
   },
   {
