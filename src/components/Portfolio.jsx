@@ -5,34 +5,34 @@ const FILTERS = ['All', 'Photos', 'Videos']
 
 const portfolioItems = [
   // Photos — real compressed files
-  { id: 1,  type: 'photo', src: '/images/_DSC2963-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 2,  type: 'photo', src: '/images/_DSC2969-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 3,  type: 'photo', src: '/images/_DSC2984-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 4,  type: 'photo', src: '/images/_DSC3008-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 5,  type: 'photo', src: '/images/_DSC3021-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 6,  type: 'photo', src: '/images/_DSC3155-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 7,  type: 'photo', src: '/images/_DSC3186-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 8,  type: 'photo', src: '/images/_DSC3253-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 9,  type: 'photo', src: '/images/_DSC3256-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 10, type: 'photo', src: '/images/_DSC3271-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 11, type: 'photo', src: '/images/_DSC3276-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 12, type: 'photo', src: '/images/_DSC3288-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 13, type: 'photo', src: '/images/_DSC5031-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 14, type: 'photo', src: '/images/_DSC5053-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 15, type: 'photo', src: '/images/_DSC5095-HDR.jpg', category: 'Photos', alt: 'Real estate photography' },
-  { id: 16, type: 'photo', src: '/images/_DSC5675.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 17, type: 'photo', src: '/images/_DSC5681.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 18, type: 'photo', src: '/images/_DSC5684.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 19, type: 'photo', src: '/images/_DSC5687.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 20, type: 'photo', src: '/images/_DSC9656.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 21, type: 'photo', src: '/images/_DSC9665.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 22, type: 'photo', src: '/images/_DSC9668.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 23, type: 'photo', src: '/images/_DSC9671.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 24, type: 'photo', src: '/images/_DSC9680.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 25, type: 'photo', src: '/images/_DSC9689.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 26, type: 'photo', src: '/images/_DSC9703.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 27, type: 'photo', src: '/images/_DSC9808.jpg',     category: 'Photos', alt: 'Real estate photography' },
-  { id: 28, type: 'photo', src: '/images/_DSC9841.jpg',     category: 'Photos', alt: 'Real estate photography' },
+  { id: 1,  type: 'photo', src: '/images/_DSC2963-HDR.jpg', category: 'Photos', alt: 'HDR interior living room, Phoenix AZ real estate photography' },
+  { id: 2,  type: 'photo', src: '/images/_DSC2969-HDR.jpg', category: 'Photos', alt: 'HDR kitchen photography for Phoenix listing' },
+  { id: 3,  type: 'photo', src: '/images/_DSC2984-HDR.jpg', category: 'Photos', alt: 'Professional bedroom photography, Scottsdale AZ real estate' },
+  { id: 4,  type: 'photo', src: '/images/_DSC3008-HDR.jpg', category: 'Photos', alt: 'HDR exterior front-of-home photography, Phoenix AZ' },
+  { id: 5,  type: 'photo', src: '/images/_DSC3021-HDR.jpg', category: 'Photos', alt: 'Real estate interior photography, open-plan living area Phoenix' },
+  { id: 6,  type: 'photo', src: '/images/_DSC3155-HDR.jpg', category: 'Photos', alt: 'HDR bathroom photography for luxury listing, Phoenix AZ' },
+  { id: 7,  type: 'photo', src: '/images/_DSC3186-HDR.jpg', category: 'Photos', alt: 'Professional dining room photography, Scottsdale real estate' },
+  { id: 8,  type: 'photo', src: '/images/_DSC3253-HDR.jpg', category: 'Photos', alt: 'HDR exterior patio photography, Phoenix AZ listing' },
+  { id: 9,  type: 'photo', src: '/images/_DSC3256-HDR.jpg', category: 'Photos', alt: 'Real estate pool and backyard photography, Phoenix AZ' },
+  { id: 10, type: 'photo', src: '/images/_DSC3271-HDR.jpg', category: 'Photos', alt: 'HDR master bedroom photography, luxury Phoenix real estate' },
+  { id: 11, type: 'photo', src: '/images/_DSC3276-HDR.jpg', category: 'Photos', alt: 'Professional home office photography for Phoenix listing' },
+  { id: 12, type: 'photo', src: '/images/_DSC3288-HDR.jpg', category: 'Photos', alt: 'HDR garage and entry photography, Phoenix AZ real estate' },
+  { id: 13, type: 'photo', src: '/images/_DSC5031-HDR.jpg', category: 'Photos', alt: 'Real estate living room photography, Chandler AZ listing' },
+  { id: 14, type: 'photo', src: '/images/_DSC5053-HDR.jpg', category: 'Photos', alt: 'HDR kitchen and island photography, Scottsdale AZ' },
+  { id: 15, type: 'photo', src: '/images/_DSC5095-HDR.jpg', category: 'Photos', alt: 'Professional exterior photography, Tempe AZ real estate listing' },
+  { id: 16, type: 'photo', src: '/images/_DSC5675.jpg',     category: 'Photos', alt: 'Luxury exterior real estate photography, Phoenix AZ' },
+  { id: 17, type: 'photo', src: '/images/_DSC5681.jpg',     category: 'Photos', alt: 'High-end living room photography for Phoenix real estate listing' },
+  { id: 18, type: 'photo', src: '/images/_DSC5684.jpg',     category: 'Photos', alt: 'HDR interior photography, Mesa AZ real estate' },
+  { id: 19, type: 'photo', src: '/images/_DSC5687.jpg',     category: 'Photos', alt: 'Professional real estate photography, Phoenix AZ backyard' },
+  { id: 20, type: 'photo', src: '/images/_DSC9656.jpg',     category: 'Photos', alt: 'HDR exterior home photography, Glendale AZ real estate' },
+  { id: 21, type: 'photo', src: '/images/_DSC9665.jpg',     category: 'Photos', alt: 'Real estate kitchen photography, Phoenix AZ listing' },
+  { id: 22, type: 'photo', src: '/images/_DSC9668.jpg',     category: 'Photos', alt: 'Professional bathroom photography for Scottsdale listing' },
+  { id: 23, type: 'photo', src: '/images/_DSC9671.jpg',     category: 'Photos', alt: 'HDR bedroom photography, luxury real estate Phoenix AZ' },
+  { id: 24, type: 'photo', src: '/images/_DSC9680.jpg',     category: 'Photos', alt: 'Real estate living area photography, Peoria AZ listing' },
+  { id: 25, type: 'photo', src: '/images/_DSC9689.jpg',     category: 'Photos', alt: 'Professional exterior twilight photography, Phoenix real estate' },
+  { id: 26, type: 'photo', src: '/images/_DSC9703.jpg',     category: 'Photos', alt: 'HDR interior photography with natural light, Scottsdale AZ' },
+  { id: 27, type: 'photo', src: '/images/_DSC9808.jpg',     category: 'Photos', alt: 'Luxury real estate photography, Phoenix AZ home listing' },
+  { id: 28, type: 'photo', src: '/images/_DSC9841.jpg',     category: 'Photos', alt: 'Professional real estate photography, Tempe AZ property' },
   // Videos
   { id: 29, type: 'video', src: '/videos/elizabeth-reel.mp4',   poster: '/images/thumb-elizabeth-reel.jpg', category: 'Videos', alt: 'Elizabeth property reel' },
   { id: 30, type: 'video', src: '/videos/daniel-reel.mp4',      poster: '/images/thumb-daniel-reel.jpg',    category: 'Videos', alt: 'Daniel, Lauren, Monica & Jordan reel' },
@@ -59,21 +59,21 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
   return (
     <div className="lightbox-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <button
-        className="absolute top-4 right-4 text-white/70 hover:text-white p-2 transition-colors"
+        className="absolute top-4 right-4 text-white/70 hover:text-white p-3 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
         onClick={onClose}
         aria-label="Close"
       >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
 
       <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors z-10"
+        className="absolute left-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 transition-colors z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
         onClick={(e) => { e.stopPropagation(); onPrev() }}
         aria-label="Previous"
       >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
@@ -98,11 +98,11 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
       )}
 
       <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors z-10"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 transition-colors z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
         onClick={(e) => { e.stopPropagation(); onNext() }}
         aria-label="Next"
       >
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -137,7 +137,8 @@ export default function Portfolio() {
     <section id="portfolio" className="py-24 px-6 bg-bg-warm">
       <div className="max-w-7xl mx-auto">
         <div ref={sectionRef} className="fade-up mb-12">
-          <h2 className="font-display font-semibold text-5xl md:text-7xl text-text-primary leading-none mb-4">
+          <p className="section-eyebrow mb-4">Portfolio</p>
+          <h2 className="font-display font-semibold text-4xl sm:text-5xl md:text-7xl text-text-primary leading-none mb-4">
             Our Work
           </h2>
           <p className="font-body text-text-secondary text-lg max-w-md">
@@ -171,6 +172,8 @@ export default function Portfolio() {
               <img
                 src={item.type === 'video' ? item.poster : item.src}
                 alt={item.alt}
+                loading={item.id <= 3 ? 'eager' : 'lazy'}
+                decoding="async"
                 className="w-full block"
               />
 

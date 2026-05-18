@@ -12,6 +12,7 @@ export default function Hero() {
           src="/images/_DSC5681.jpg"
           alt="Luxury property photographed by Roadrunner Media, Phoenix AZ"
           className="w-full h-full object-cover object-center"
+          loading="eager"
           fetchPriority="high"
         />
         {/* Soft right-edge blend into content panel */}
@@ -21,11 +22,11 @@ export default function Hero() {
       </div>
 
       {/* Right — Content */}
-      <div className="flex-1 bg-bg-warm flex items-center justify-start px-8 md:px-12 lg:px-16 py-16 lg:py-0">
+      <div className="flex-1 bg-bg-warm flex items-center justify-start px-6 sm:px-8 md:px-12 lg:px-16 py-16 lg:py-0">
         <div className="max-w-lg w-full">
           <p className="section-eyebrow mb-5">Phoenix Real Estate Media</p>
 
-          <h1 className="font-display font-bold text-5xl md:text-6xl lg:text-7xl text-text-primary leading-[1.05] mb-6">
+          <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-text-primary leading-[1.05] mb-6">
             Listings That
             <br />
             <span className="text-gold">Sell Themselves</span>
@@ -46,11 +47,17 @@ export default function Hero() {
             </a>
             <a
               href="#portfolio"
-              className="border border-border text-text-primary font-body font-medium px-8 py-4 rounded-full text-base hover:border-gold hover:text-gold transition-all duration-200 hover:-translate-y-0.5 text-center"
+              className="inline-flex items-center justify-center gap-2 border border-border text-text-primary font-body font-medium px-8 py-4 rounded-full text-base hover:border-gold hover:text-gold transition-all duration-200 hover:-translate-y-0.5"
             >
-              See Our Work ↓
+              See Our Work
+              <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
             </a>
           </div>
+          <p className="font-body text-text-secondary/60 text-xs mt-4">
+            No payment required to schedule · 2-min booking
+          </p>
         </div>
       </div>
     </section>

@@ -23,10 +23,15 @@ export default function Nav({ bannerOffset = false }) {
     return () => observer.disconnect()
   }, [])
 
-  // Prevent body scroll when menu is open
+  // Prevent body scroll and handle ESC key when menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    const handler = (e) => { if (e.key === 'Escape') setMenuOpen(false) }
+    if (menuOpen) window.addEventListener('keydown', handler)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handler)
+    }
   }, [menuOpen])
 
   return (

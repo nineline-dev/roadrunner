@@ -4,7 +4,7 @@ export default function About() {
   const sectionRef = useScrollObserver()
 
   return (
-    <section id="about" className="py-24 px-6 bg-white">
+    <section id="about" className="py-24 px-6 bg-bg-warm">
       <div className="max-w-3xl mx-auto">
         <div ref={sectionRef} className="fade-up">
           <p className="section-eyebrow mb-4">Why Roadrunner Media</p>
@@ -21,7 +21,7 @@ export default function About() {
               Too many great properties were getting lost behind dark, blurry photos. We exist to change that — bringing professional HDR photography, drone work, virtual staging, and floor plans to every listing, no matter the price point.
             </p>
             <p>
-              500+ properties photographed across the Valley. FAA-licensed drone operations. Every order delivered within 24 hours, guaranteed.
+              <strong className="text-text-primary font-semibold">500+ properties</strong> photographed across the Valley. FAA-licensed drone pilot on every aerial shoot. Every delivery guaranteed within <strong className="text-text-primary font-semibold">24 hours</strong>.
             </p>
           </div>
         </div>

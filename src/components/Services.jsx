@@ -52,11 +52,12 @@ export default function Services() {
                 <h3 className="font-display font-semibold text-2xl md:text-4xl text-text-primary group-hover:text-gold transition-colors duration-300 leading-tight flex-shrink-0">
                   {service.title}
                 </h3>
-                <p className="font-body text-text-secondary text-sm leading-relaxed md:max-w-sm">
+                <p className="font-body text-text-secondary text-sm leading-relaxed max-w-sm md:max-w-sm">
                   {service.description}
                 </p>
               </div>
               <svg
+                aria-hidden="true"
                 className="w-5 h-5 text-text-secondary/30 group-hover:text-gold group-hover:translate-x-1 transition-all duration-300 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"

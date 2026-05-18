@@ -231,7 +231,7 @@ function CheckIcon() {
 
 function XIcon() {
   return (
-    <svg className="w-4 h-4 text-text-secondary/30 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <svg className="w-4 h-4 text-text-secondary/45 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
     </svg>
   )
@@ -249,7 +249,7 @@ function PriceCard({ pkg, allFeatures, bookingUrl }) {
       }`}
     >
       {pkg.popular && (
-        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+        <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
           <span className="bg-gold text-white text-xs font-medium font-body px-4 py-1 rounded-full">
             Most Popular
           </span>
@@ -280,7 +280,7 @@ function PriceCard({ pkg, allFeatures, bookingUrl }) {
                   className={`font-body text-sm leading-snug ${
                     included
                       ? 'text-text-secondary'
-                      : 'text-text-secondary/35 line-through'
+                      : 'text-text-secondary/50 line-through'
                   }`}
                 >
                   {feature}
@@ -347,7 +347,7 @@ export default function Pricing() {
             <button
               key={service}
               onClick={() => handleServiceChange(service)}
-              className={`font-body font-medium px-6 py-3 rounded-full border-2 transition-all duration-200 text-sm ${
+              className={`font-body font-medium px-4 sm:px-6 py-3 rounded-full border-2 transition-all duration-200 text-sm ${
                 activeService === service
                   ? 'bg-gold border-gold text-white shadow-lg shadow-gold/25 scale-105'
                   : 'border-border bg-white text-text-secondary hover:border-gold hover:text-gold hover:scale-105'

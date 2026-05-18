@@ -21,7 +21,7 @@ export default function MobileBookBar() {
           href={ARYEO_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-gold w-full text-center block text-sm"
+          className="btn-gold w-full text-center block text-sm py-3.5"
         >
           Book a Shoot
         </a>

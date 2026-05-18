@@ -1,11 +1,18 @@
 export default function AnnouncementBar({ onDismiss }) {
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] h-12 bg-gold flex items-center justify-center px-4">
-      <p className="font-body text-white text-xs sm:text-sm font-medium text-center leading-tight">
-        <span className="font-semibold">Every shoot includes:</span>
-        {' '}HDR Photos · 3–5 Drone Shots · Free Virtual Staging · 2D Floor Plan · Marketing Materials
-        {' '}
-        <span className="font-semibold">— From $250</span>
+    <div role="status" aria-live="polite" className="fixed top-0 left-0 right-0 z-[60] h-12 bg-gold flex items-center justify-center px-4">
+      <p className="font-body text-white text-xs sm:text-sm font-medium text-center leading-tight pr-8">
+        {/* Mobile: one-liner that fits h-12 */}
+        <span className="sm:hidden">
+          HDR · Drone · Virtual Staging · Floor Plan{' '}
+          <span className="font-semibold">— From $250</span>
+        </span>
+        {/* sm+: full value proposition */}
+        <span className="hidden sm:inline">
+          <span className="font-semibold">Every shoot includes:</span>
+          {' '}HDR Photos · 3–5 Drone Shots · Free Virtual Staging · 2D Floor Plan · Marketing Materials{' '}
+          <span className="font-semibold">— From $250</span>
+        </span>
       </p>
       <button
         onClick={onDismiss}

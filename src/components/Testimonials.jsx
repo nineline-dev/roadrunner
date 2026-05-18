@@ -30,7 +30,7 @@ const testimonials = [
     name: 'Priya S.',
     role: 'Team Lead, Keller Williams',
     headline: 'Our brand looks elite now.',
-    quote: "We hired Aota Media for our whole team's headshots and the logo redesign. The consistency and quality across everything was incredible.",
+    quote: "We hired Roadrunner Media for our whole team's headshots and the logo redesign. The consistency and quality across everything was incredible.",
   },
 ]
 
@@ -48,12 +48,15 @@ export default function Testimonials() {
     <section id="testimonials" className="py-24 bg-bg-warm overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
 
-        {/* Featured pull quote — replaces the generic eyebrow+title */}
+        {/* Featured pull quote */}
         <div ref={sectionRef} className="fade-up mb-12">
           <p className="section-eyebrow mb-5">What Agents Are Saying</p>
           <blockquote className="font-display font-semibold text-3xl md:text-5xl text-text-primary leading-tight max-w-3xl mb-3">
             "Sold in 3 days, 15% over asking."
           </blockquote>
+          <p className="font-body text-text-secondary text-base md:text-lg max-w-2xl mb-3 leading-relaxed">
+            "Colin delivered absolutely stunning photos of my listing within 24 hours. The quality blew my clients away."
+          </p>
           <cite className="font-body text-text-secondary not-italic text-sm">
             — Sarah M., Realtor, Realty ONE Group
           </cite>
@@ -80,10 +83,10 @@ export default function Testimonials() {
             className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {testimonials.map((t, i) => (
+            {testimonials.slice(1).map((t, i) => (
               <div
                 key={i}
-                className="flex-none w-80 md:w-96 bg-white border border-border rounded-2xl p-8 snap-start hover:shadow-lg hover:border-gold/30 transition-all duration-300"
+                className="flex-none w-[80vw] sm:w-80 md:w-96 bg-white border border-border rounded-2xl p-8 snap-start hover:shadow-lg hover:border-gold/30 transition-all duration-300"
               >
                 <p className="font-display font-semibold text-text-primary text-lg leading-snug mb-3">
                   "{t.headline}"
