@@ -1,225 +1,83 @@
-import { useState } from 'react'
 import { ARYEO_BOOKING_URL, CONTACT_EMAIL } from '../config'
 import { useScrollObserver } from '../hooks/useScrollObserver'
 
-const SERVICES = ['Photos', 'Video', 'Headshots', 'Logos']
-
-const serviceFeatures = {
-  Photos: [
-    'HDR Photography',
-    'Drone / Neighborhood Shots (3–5)',
-    'Virtual Staging (FREE)',
-    '2D Floor Plan',
-    'Marketing Materials',
-    'Twilight Session',
-    'Video Walk-Through Add-On',
-    'Social Media Edits',
-  ],
-  Video: [
-    'Interior Walk-Through Video',
-    '4K Resolution',
-    'Aerial Drone Footage',
-    'Licensed Music',
-    'Branded Intro/Outro',
-    'Color Grading',
-    'Voiceover Option',
-    'MLS + Social Versions',
-  ],
-  Headshots: [
-    '10 Edited Photos',
-    '25 Edited Photos',
-    'Outfit Changes',
-    'Multiple Locations',
-    'LinkedIn + Social Crops',
-    'Background Color Options',
-    'Team Composite Photo',
-    'Priority Delivery',
-  ],
-  Logos: [
-    '3 Initial Concepts',
-    '5 Initial Concepts',
-    'Revision Rounds (2)',
-    'Unlimited Revisions',
-    'Full Brand Guide',
-    'Business Card Design',
-    'Email Signature + Social Kit',
-    'Complete Brand Strategy',
-  ],
-}
-
-const pricingData = {
-  Photos: [
-    {
-      name: 'Essential',
-      price: '$250',
-      duration: 'Standard shoot',
-      popular: false,
-      included: [
-        'HDR Photography',
-        'Drone / Neighborhood Shots (3–5)',
-        'Virtual Staging (FREE)',
-        '2D Floor Plan',
-        'Marketing Materials',
-      ],
-    },
-    {
-      name: 'Standard',
-      price: '$350',
-      duration: 'Standard + twilight',
-      popular: true,
-      included: [
-        'HDR Photography',
-        'Drone / Neighborhood Shots (3–5)',
-        'Virtual Staging (FREE)',
-        '2D Floor Plan',
-        'Marketing Materials',
-        'Twilight Session',
-        'Social Media Edits',
-      ],
-    },
-    {
-      name: 'Premium',
-      price: '$550',
-      duration: 'Full package',
-      popular: false,
-      included: [
-        'HDR Photography',
-        'Drone / Neighborhood Shots (3–5)',
-        'Virtual Staging (FREE)',
-        '2D Floor Plan',
-        'Marketing Materials',
-        'Twilight Session',
-        'Video Walk-Through Add-On',
-        'Social Media Edits',
-      ],
-    },
-  ],
-  Video: [
-    {
-      name: 'Essential',
-      price: '$299',
-      duration: '1–2 min walk-through',
-      popular: false,
-      included: [
-        'Interior Walk-Through Video',
-        'Licensed Music',
-        'MLS + Social Versions',
-      ],
-    },
-    {
-      name: 'Standard',
-      price: '$499',
-      duration: '2–3 min cinematic',
-      popular: true,
-      included: [
-        'Interior Walk-Through Video',
-        '4K Resolution',
-        'Aerial Drone Footage',
-        'Licensed Music',
-        'Branded Intro/Outro',
-        'MLS + Social Versions',
-      ],
-    },
-    {
-      name: 'Premium',
-      price: '$799',
-      duration: '3–5 min showcase',
-      popular: false,
-      included: [
-        'Interior Walk-Through Video',
-        '4K Resolution',
-        'Aerial Drone Footage',
-        'Licensed Music',
-        'Branded Intro/Outro',
-        'Color Grading',
-        'Voiceover Option',
-        'MLS + Social Versions',
-      ],
-    },
-  ],
-  Headshots: [
-    {
-      name: 'Solo Session',
-      price: '$199',
-      duration: '30 min session',
-      popular: false,
-      included: [
-        '10 Edited Photos',
-        'Outfit Changes',
-        'Priority Delivery',
-      ],
-    },
-    {
-      name: 'Brand Session',
-      price: '$349',
-      duration: '60 min session',
-      popular: true,
-      included: [
-        '10 Edited Photos',
-        '25 Edited Photos',
-        'Outfit Changes',
-        'Multiple Locations',
-        'LinkedIn + Social Crops',
-        'Background Color Options',
-        'Priority Delivery',
-      ],
-    },
-    {
-      name: 'Team Package',
-      price: '$199/person',
-      duration: '4+ people',
-      popular: false,
-      included: [
-        '10 Edited Photos',
-        'Outfit Changes',
-        'Background Color Options',
-        'Team Composite Photo',
-        'Priority Delivery',
-      ],
-    },
-  ],
-  Logos: [
-    {
-      name: 'Starter',
-      price: '$299',
-      duration: '5–7 business days',
-      popular: false,
-      included: [
-        '3 Initial Concepts',
-        'Revision Rounds (2)',
-      ],
-    },
-    {
-      name: 'Brand Kit',
-      price: '$549',
-      duration: '7–10 business days',
-      popular: true,
-      included: [
-        '3 Initial Concepts',
-        '5 Initial Concepts',
-        'Unlimited Revisions',
-        'Full Brand Guide',
-        'Business Card Design',
-        'Email Signature + Social Kit',
-      ],
-    },
-    {
-      name: 'Full Identity',
-      price: '$999',
-      duration: '10–14 business days',
-      popular: false,
-      included: [
-        '3 Initial Concepts',
-        '5 Initial Concepts',
-        'Unlimited Revisions',
-        'Full Brand Guide',
-        'Business Card Design',
-        'Email Signature + Social Kit',
-        'Complete Brand Strategy',
-      ],
-    },
-  ],
-}
+const packages = [
+  {
+    name: 'Keep It Simple',
+    price: '$250',
+    turnaround: '24-hr delivery',
+    popular: false,
+    features: [
+      '23–35 HDR Photos',
+      '3–5 Drone Photos (if airspace allows)',
+      '2D Floor Plan',
+      'Complimentary Property Website',
+      'Customizable Marketing Materials',
+    ],
+  },
+  {
+    name: 'Social Engagement',
+    subtitle: 'Photos + Video',
+    price: '$450',
+    turnaround: '24-hr delivery',
+    popular: false,
+    features: [
+      '25–35 HDR Photos',
+      '30–60 sec Social Media Reel',
+      '3–5 Drone Photos',
+      '2D Floor Plan',
+      'Complimentary Property Website',
+      'Customizable Marketing Materials',
+    ],
+  },
+  {
+    name: 'Deluxe',
+    price: '$650',
+    turnaround: '24-hr delivery',
+    popular: true,
+    features: [
+      '25–35 HDR Photos',
+      '30–60 sec Social Media Reel',
+      '1–3 min MLS / YouTube Video',
+      'Drone Photos + Video',
+      '2D Floor Plan',
+      'Complimentary Property Website',
+      'Customizable Marketing Materials',
+    ],
+  },
+  {
+    name: 'Premier',
+    subtitle: 'Twilight',
+    price: '$800',
+    turnaround: '24–72 hr delivery',
+    popular: false,
+    features: [
+      '25–35 HDR Photos',
+      '30–60 sec Social Media Reel',
+      '2–3 min MLS / YouTube Video',
+      'Drone Video + Photos',
+      '2D Floor Plan',
+      'Complimentary Property Website',
+      'Customizable Marketing Materials',
+    ],
+  },
+  {
+    name: 'Luxury / AirBNB',
+    subtitle: 'Twilight & Daytime',
+    price: '$1,000',
+    turnaround: '24–72 hr delivery',
+    popular: false,
+    features: [
+      '80+ HDR Photos',
+      '30–60 sec Social Media Reel',
+      '2–3 min MLS / YouTube Video',
+      'Drone Video + Photos',
+      '2D Floor Plan',
+      'Complimentary Property Website',
+      'Customizable Marketing Materials',
+    ],
+  },
+]
 
 function CheckIcon() {
   return (
@@ -229,17 +87,7 @@ function CheckIcon() {
   )
 }
 
-function XIcon() {
-  return (
-    <svg className="w-4 h-4 text-text-secondary/45 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  )
-}
-
-function PriceCard({ pkg, allFeatures, bookingUrl }) {
-  const includedSet = new Set(pkg.included)
-
+function PriceCard({ pkg }) {
   return (
     <div
       className={`relative flex flex-col bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
@@ -258,40 +106,32 @@ function PriceCard({ pkg, allFeatures, bookingUrl }) {
 
       <div className="p-8 flex flex-col flex-1">
         <div className="mb-6">
-          <h3 className="font-display font-semibold text-xl text-text-primary mb-1">{pkg.name}</h3>
-          <div className="flex items-baseline gap-1 mb-1">
+          <h3 className="font-display font-semibold text-xl text-text-primary mb-0.5">{pkg.name}</h3>
+          {pkg.subtitle && (
+            <p className="font-body text-sm text-text-secondary/70 mb-2">{pkg.subtitle}</p>
+          )}
+          <div className="flex items-baseline gap-1 mb-3">
             <span className="font-display font-bold text-4xl text-text-primary">{pkg.price}</span>
           </div>
           <span className="inline-flex items-center gap-1.5 bg-gold-light text-gold text-xs font-medium px-3 py-1 rounded-full">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {pkg.duration}
+            {pkg.turnaround}
           </span>
         </div>
 
         <ul className="space-y-3 flex-1 mb-8">
-          {allFeatures.map((feature) => {
-            const included = includedSet.has(feature)
-            return (
-              <li key={feature} className="flex items-start gap-3">
-                {included ? <CheckIcon /> : <XIcon />}
-                <span
-                  className={`font-body text-sm leading-snug ${
-                    included
-                      ? 'text-text-secondary'
-                      : 'text-text-secondary/50 line-through'
-                  }`}
-                >
-                  {feature}
-                </span>
-              </li>
-            )
-          })}
+          {pkg.features.map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <CheckIcon />
+              <span className="font-body text-sm text-text-secondary leading-snug">{feature}</span>
+            </li>
+          ))}
         </ul>
 
         <a
-          href={bookingUrl}
+          href={ARYEO_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
           className={`w-full text-center font-body font-medium text-sm py-3.5 rounded-full transition-all duration-200 ${
@@ -311,18 +151,7 @@ function PriceCard({ pkg, allFeatures, bookingUrl }) {
 }
 
 export default function Pricing() {
-  const [activeService, setActiveService] = useState('Photos')
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const sectionRef = useScrollObserver()
-
-  const handleServiceChange = (service) => {
-    if (service === activeService) return
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setActiveService(service)
-      setIsTransitioning(false)
-    }, 160)
-  }
 
   return (
     <section id="pricing" className="py-24 px-6 bg-bg-warm">
@@ -335,40 +164,23 @@ export default function Pricing() {
           </p>
         </div>
 
-        <p className="text-center font-body text-text-secondary text-sm mt-6 mb-2">
-          Most Phoenix agents start with{' '}
-          <span className="text-text-primary font-medium">Essential Photos</span>
-          {' '}— add Video for listings over $500k.
+        <p className="text-center font-body text-text-secondary text-sm mt-6 mb-12">
+          Every package includes a complimentary property website and marketing materials.
         </p>
 
-        {/* Service bubbles */}
-        <div className="flex flex-wrap gap-3 justify-center mb-12 mt-4">
-          {SERVICES.map((service) => (
-            <button
-              key={service}
-              onClick={() => handleServiceChange(service)}
-              className={`font-body font-medium px-4 sm:px-6 py-3 rounded-full border-2 transition-all duration-200 text-sm ${
-                activeService === service
-                  ? 'bg-gold border-gold text-white shadow-lg shadow-gold/25 scale-105'
-                  : 'border-border bg-white text-text-secondary hover:border-gold hover:text-gold hover:scale-105'
-              }`}
-            >
-              {service}
-            </button>
+        {/* Top row — 3 cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+          {packages.slice(0, 3).map((pkg) => (
+            <PriceCard key={pkg.name} pkg={pkg} />
           ))}
         </div>
 
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-opacity duration-150"
-          style={{ opacity: isTransitioning ? 0 : 1 }}
-        >
-          {pricingData[activeService].map((pkg) => (
-            <PriceCard
-              key={pkg.name}
-              pkg={pkg}
-              allFeatures={serviceFeatures[activeService]}
-              bookingUrl={ARYEO_BOOKING_URL}
-            />
+        {/* Bottom row — 2 cards centered */}
+        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          {packages.slice(3).map((pkg) => (
+            <div key={pkg.name} className="w-full sm:max-w-[calc(50%-12px)] lg:max-w-[380px]">
+              <PriceCard pkg={pkg} />
+            </div>
           ))}
         </div>
 
@@ -393,7 +205,7 @@ export default function Pricing() {
           <div>
             <h3 className="font-semibold text-text-primary mb-2">How fast will I get my photos?</h3>
             <p className="text-text-secondary leading-relaxed">
-              Every photo package includes guaranteed 24-hour delivery via your ARYEO media portal — no matter the package tier.
+              Every package includes fast delivery via your ARYEO media portal. Standard packages deliver in 24 hours; twilight and luxury packages deliver in 24–72 hours.
             </p>
           </div>
         </div>

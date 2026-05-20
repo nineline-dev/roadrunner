@@ -3,22 +3,22 @@ import { useScrollObserver } from '../hooks/useScrollObserver'
 const services = [
   {
     title: 'Real Estate Photos',
-    description: 'Magazine-quality interior and exterior photography that makes every room look its absolute best.',
+    description: 'Magazine-quality interior and exterior HDR photography that makes every room look its absolute best.',
     href: '#pricing',
   },
   {
     title: 'Video Tours',
-    description: 'Cinematic real estate videography — walk-through videos, aerial drone footage, and 4K tours that give buyers an immersive first look.',
+    description: 'Cinematic real estate videography — social reels, MLS walk-throughs, aerial drone footage, and 4K property showcases.',
     href: '#pricing',
   },
   {
-    title: 'Headshots',
-    description: 'Professional agent headshots and branding portraits that build trust before the first showing.',
+    title: 'Drone Coverage',
+    description: 'FAA-licensed aerial photography and video giving buyers a full picture of the property, neighborhood, and surroundings.',
     href: '#pricing',
   },
   {
-    title: 'Logo Design',
-    description: 'Custom brand identities for agents and brokerages — logos, color systems, and style guides.',
+    title: 'Floor Plans & Marketing',
+    description: '2D floor plans, complimentary property websites, and customizable marketing materials — everything in one shoot.',
     href: '#pricing',
   },
 ]

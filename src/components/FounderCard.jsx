@@ -10,7 +10,7 @@ export default function FounderCard() {
           <img
             src="/images/colin-hero.png"
             alt="Colin, Founder of Roadrunner Media"
-            className="w-28 h-36 rounded-xl object-cover object-top flex-shrink-0"
+            className="w-28 h-36 rounded-xl object-cover object-left flex-shrink-0"
           />
           <div>
             <p className="font-display font-semibold text-lg text-text-primary">Colin</p>
