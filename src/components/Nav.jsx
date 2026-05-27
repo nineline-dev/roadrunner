@@ -49,18 +49,10 @@ export default function Nav({ bannerOffset = false }) {
           {/* Wordmark */}
           <a
             href="#hero"
-            className={`font-display font-bold text-xl tracking-[0.2em] transition-colors duration-300 flex items-center gap-2 ${
+            className={`font-display font-bold text-xl tracking-[0.2em] transition-colors duration-300 ${
               scrolled ? 'text-text-primary' : 'text-white'
             }`}
           >
-            {scrolled && (
-              <img
-                src="/images/logo.png"
-                alt=""
-                aria-hidden="true"
-                className="h-7 w-auto mix-blend-multiply"
-              />
-            )}
             ROADRUNNER MEDIA
           </a>
 
