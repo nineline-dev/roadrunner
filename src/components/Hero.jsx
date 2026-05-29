@@ -33,7 +33,7 @@ export default function Hero() {
           </h1>
 
           <p className="font-body text-text-secondary text-lg leading-relaxed mb-10 max-w-sm">
-            Stunning photography, cinematic video tours, and fast 24-hour turnaround for Phoenix real estate professionals.
+            Stunning photography, cinematic video tours, and fast 24-hour turnaround for Phoenix, Scottsdale, and Valley real estate professionals.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">

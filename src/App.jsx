@@ -30,9 +30,9 @@ export default function App() {
         <Hero />
         <Portfolio />
         <Services />
+        <Pricing />
         <About />
         <Testimonials />
-        <Pricing />
         <CTABanner />
         <FounderCard />
       </main>
