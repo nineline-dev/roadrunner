@@ -4,6 +4,19 @@ import { useScrollObserver } from '../hooks/useScrollObserver'
 const FILTERS = ['All', 'Photos', 'Videos']
 
 const portfolioItems = [
+  // New 2026 photos
+  { id: 36, type: 'photo', src: '/images/1.jpg',                    category: 'Photos', alt: 'Luxury living room with fireplace and built-ins, Phoenix AZ' },
+  { id: 37, type: 'photo', src: '/images/2.jpg',                    category: 'Photos', alt: 'Open-plan living room and kitchen, luxury Phoenix real estate' },
+  { id: 38, type: 'photo', src: '/images/3.jpg',                    category: 'Photos', alt: 'Modern kitchen with marble waterfall island, Phoenix AZ' },
+  { id: 39, type: 'photo', src: '/images/4.jpg',                    category: 'Photos', alt: 'Contemporary kitchen with dark cabinetry and wine fridge, Phoenix AZ' },
+  { id: 40, type: 'photo', src: '/images/5.jpg',                    category: 'Photos', alt: 'Living room with mountain views, Scottsdale AZ real estate' },
+  { id: 41, type: 'photo', src: '/images/6.jpg',                    category: 'Photos', alt: 'Outdoor stone fireplace with pool at dusk, Phoenix AZ' },
+  { id: 42, type: 'photo', src: '/images/7.jpg',                    category: 'Photos', alt: 'Luxury marble bathroom with freestanding tub, Scottsdale AZ' },
+  { id: 43, type: 'photo', src: '/images/8.jpg',                    category: 'Photos', alt: 'Resort-style pool at twilight, Camelback area Phoenix AZ' },
+  { id: 44, type: 'photo', src: '/images/9.jpg',                    category: 'Photos', alt: 'Aerial drone photography of Phoenix neighborhood with mountain views' },
+  { id: 45, type: 'photo', src: '/images/property-lounge.jpg',      category: 'Photos', alt: 'Modern reading lounge with floor-to-ceiling windows, Phoenix AZ' },
+  { id: 46, type: 'photo', src: '/images/property-living-pool.jpg', category: 'Photos', alt: 'Open living room flowing to pool and patio, Phoenix AZ' },
+  { id: 47, type: 'photo', src: '/images/property-game-room.jpg',   category: 'Photos', alt: 'Game room with pool table and open kitchen, Scottsdale AZ' },
   // Photos — real compressed files
   { id: 1,  type: 'photo', src: '/images/_DSC2963-HDR.jpg', category: 'Photos', alt: 'HDR interior living room, Phoenix AZ real estate photography' },
   { id: 2,  type: 'photo', src: '/images/_DSC2969-HDR.jpg', category: 'Photos', alt: 'HDR kitchen photography for Phoenix listing' },
@@ -34,6 +47,9 @@ const portfolioItems = [
   { id: 27, type: 'photo', src: '/images/_DSC9808.jpg',     category: 'Photos', alt: 'Luxury real estate photography, Phoenix AZ home listing' },
   { id: 28, type: 'photo', src: '/images/_DSC9841.jpg',     category: 'Photos', alt: 'Professional real estate photography, Tempe AZ property' },
   // Videos
+  { id: 48, type: 'video', src: '/videos/portfolio-video-2.mp4', poster: '/images/thumb-portfolio-video-2.jpg', category: 'Videos', alt: 'Agent reel — real estate video marketing Phoenix AZ' },
+  { id: 49, type: 'video', src: '/videos/portfolio-video-3.mp4', poster: '/images/thumb-portfolio-video-3.jpg', category: 'Videos', alt: 'Property walkthrough reel, Phoenix AZ' },
+  { id: 50, type: 'video', src: '/videos/portfolio-video-4.mp4', poster: '/images/thumb-portfolio-video-4.jpg', category: 'Videos', alt: 'Agent intro video, luxury listing Phoenix AZ' },
   { id: 29, type: 'video', src: '/videos/elizabeth-reel.mp4',   poster: '/images/thumb-elizabeth-reel.jpg', category: 'Videos', alt: 'Elizabeth property reel' },
   { id: 30, type: 'video', src: '/videos/daniel-reel.mp4',      poster: '/images/thumb-daniel-reel.jpg',    category: 'Videos', alt: 'Daniel, Lauren, Monica & Jordan reel' },
   { id: 31, type: 'video', src: '/videos/2ahead.mp4',           poster: '/images/thumb-2ahead.jpg',         category: 'Videos', alt: '2Ahead property showcase' },

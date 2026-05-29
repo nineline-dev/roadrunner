@@ -9,8 +9,8 @@ export default function Hero() {
       {/* Left — Colin's photo */}
       <div className="relative lg:w-[58%] h-[55vh] lg:h-screen flex-shrink-0">
         <img
-          src="/images/_DSC5681.jpg"
-          alt="Luxury property photographed by Roadrunner Media, Phoenix AZ"
+          src="/images/hero.jpg"
+          alt="Luxury kitchen photographed by Roadrunner Media, Phoenix AZ"
           className="w-full h-full object-cover object-center"
           loading="eager"
           fetchPriority="high"

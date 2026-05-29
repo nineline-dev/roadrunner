@@ -46,13 +46,20 @@ export default function Nav({ bannerOffset = false }) {
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Wordmark */}
+          {/* Logo + Wordmark */}
           <a
             href="#hero"
-            className={`font-display font-bold text-xl tracking-[0.2em] transition-colors duration-300 ${
+            className={`flex items-center gap-3 font-display font-bold text-xl tracking-[0.2em] transition-colors duration-300 ${
               scrolled ? 'text-text-primary' : 'text-white'
             }`}
           >
+            <img
+              src="/images/logo-roadrunner.png"
+              alt="Roadrunner Media"
+              className={`h-8 w-auto transition-all duration-300 ${
+                scrolled ? '' : 'brightness-0 invert'
+              }`}
+            />
             ROADRUNNER MEDIA
           </a>
 
@@ -101,7 +108,8 @@ export default function Nav({ bannerOffset = false }) {
         }`}
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-border">
-          <span className="font-display font-bold text-xl tracking-[0.2em] text-text-primary">
+          <span className="flex items-center gap-3 font-display font-bold text-xl tracking-[0.2em] text-text-primary">
+            <img src="/images/logo-roadrunner.png" alt="Roadrunner Media" className="h-8 w-auto" />
             ROADRUNNER MEDIA
           </span>
           <button
