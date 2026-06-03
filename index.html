@@ -27,6 +27,8 @@
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@roadrunnermediaphx" />
+    <meta name="twitter:creator" content="@roadrunnermediaphx" />
     <meta name="twitter:title" content="Roadrunner Media | Real Estate Photography · Phoenix, AZ" />
     <meta name="twitter:description" content="Premium listing media for Phoenix real estate professionals. HDR photos, drone, video & 24-hr delivery. From $250." />
     <meta name="twitter:image" content="https://www.roadrunner.media/images/hero.jpg" />
@@ -112,6 +114,14 @@
           "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
         }
       ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "08:00",
+          "closes": "19:00"
+        }
+      ],
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
         "name": "Real Estate Media Services",
@@ -125,12 +135,23 @@
             "@type": "Offer",
             "itemOffered": { "@type": "Service", "name": "Real Estate Videography", "description": "Cinematic 4K walk-through videos with aerial drone footage, licensed music, branded intro/outro, and MLS-ready delivery." },
             "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "299", "maxPrice": "799" }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Agent Headshots", "description": "Professional headshot sessions with 10–25 edited photos, outfit changes, multiple locations, and LinkedIn/social crops." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "199", "maxPrice": "349" }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": { "@type": "Service", "name": "Logo & Brand Design", "description": "Custom logo concepts, full brand guides, business card design, email signature kits, and complete brand strategy." },
+            "priceSpecification": { "@type": "PriceSpecification", "priceCurrency": "USD", "minPrice": "299", "maxPrice": "999" }
           }
         ]
       },
       "sameAs": [
         "https://www.instagram.com/roadrunnermediaphx",
-        "https://www.facebook.com/roadrunnermediaphx"
+        "https://www.facebook.com/roadrunnermediaphx",
+        "https://www.youtube.com/@roadrunnermediaphx"
       ]
     }
     </script>
@@ -166,7 +187,66 @@
     }
     </script>
 
-    <!-- LCP hero image preload — browser discovers it before JS executes -->
+    <!-- FAQPage schema — enables rich result accordion in SERPs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How much does real estate photography cost in Phoenix?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Roadrunner Media offers real estate photography packages starting at $250 for the Keep It Simple package (23–35 HDR photos, drone aerials, virtual staging, 2D floor plan, and marketing materials). The Social Engagement package (photos + video reel) is $450, and the Deluxe package (photos + social reel + MLS video + drone) is $650. All packages include no upfront payment to schedule and 24-hour delivery."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is included in a real estate photography package?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every Roadrunner Media photography package includes HDR interior and exterior photos, drone aerial photography (FAA Part 107 licensed), virtual staging, a 2D floor plan, and a complimentary property website. Higher-tier packages add twilight sessions, social media video reels, and full MLS walk-through videos. There are no hidden fees — drone is included in every package."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly will I receive my listing photos after the shoot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All photo packages include guaranteed 24-hour delivery via the Aryeo media portal. Most deliveries arrive within 12–18 hours of the shoot. Twilight and luxury packages are delivered within 24–72 hours due to additional editing."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What cities and areas do you serve in the Phoenix metro?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Roadrunner Media serves the entire Phoenix metro area including Phoenix, Scottsdale, Tempe, Chandler, Gilbert, Mesa, Glendale, Peoria, and the greater Maricopa County Valley. There is no travel fee within the Phoenix metro. Custom quotes are available for properties outside the Valley."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is a drone pilot license required for real estate aerial photography in Arizona?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Commercial drone photography in Arizona requires an FAA Part 107 Remote Pilot Certificate. Roadrunner Media's founder Colin holds an active FAA Part 107 certification. Hiring an unlicensed drone operator exposes the property owner and agent to FAA fines. All Roadrunner Media aerial shoots are fully compliant and insured."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between the Deluxe and Premier photography packages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The Deluxe package ($650) includes 25–35 HDR photos, a 30–60 sec social reel, a 1–3 min MLS/YouTube video, drone photos and video, 2D floor plan, and a complimentary property website — all with 24-hour delivery. The Premier package ($800) adds a full twilight session and a longer 2–3 min video, with 24–72 hour delivery. The Luxury/AirBNB package ($1,000) provides 80+ photos with both twilight and daytime shoots."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- LCP hero image preload — WebP first, JPEG fallback -->
+    <link rel="preload" as="image" href="/images/hero.webp" type="image/webp" fetchpriority="high" />
     <link rel="preload" as="image" href="/images/hero.jpg" fetchpriority="high" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
