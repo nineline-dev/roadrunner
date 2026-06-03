@@ -21,6 +21,16 @@ const services = [
     description: '2D floor plans, complimentary property websites, and customizable marketing materials — everything in one shoot.',
     href: '#pricing',
   },
+  {
+    title: 'Agent Headshots',
+    description: 'Professional solo and brand sessions with 10–25 edited photos, outfit changes, and LinkedIn/social crops — from $199.',
+    href: '#pricing',
+  },
+  {
+    title: 'Logo & Brand Design',
+    description: 'Custom logo concepts, full brand guides, business cards, and email signature kits — everything to build your agent brand.',
+    href: '#pricing',
+  },
 ]
 
 export default function Services() {

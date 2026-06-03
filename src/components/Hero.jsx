@@ -8,13 +8,18 @@ export default function Hero() {
     >
       {/* Left — Colin's photo */}
       <div className="relative lg:w-[58%] h-[55vh] lg:h-screen flex-shrink-0">
-        <img
-          src="/images/hero.jpg"
-          alt="Luxury kitchen photographed by Roadrunner Media, Phoenix AZ"
-          className="w-full h-full object-cover object-center"
-          loading="eager"
-          fetchPriority="high"
-        />
+        <picture>
+          <source srcSet="/images/hero.webp" type="image/webp" />
+          <img
+            src="/images/hero.jpg"
+            alt="Luxury kitchen photographed by Roadrunner Media, Phoenix AZ"
+            width={1920}
+            height={1280}
+            className="w-full h-full object-cover object-center"
+            loading="eager"
+            fetchPriority="high"
+          />
+        </picture>
         {/* Soft right-edge blend into content panel */}
         <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-r from-transparent to-bg-warm hidden lg:block" />
         {/* Bottom blend on mobile */}
@@ -24,9 +29,8 @@ export default function Hero() {
       {/* Right — Content */}
       <div className="flex-1 bg-bg-warm flex items-center justify-start px-6 sm:px-8 md:px-12 lg:px-16 py-16 lg:py-0">
         <div className="max-w-lg w-full">
-          <p className="section-eyebrow mb-5">Phoenix Real Estate Photography & Videography</p>
-
           <h1 className="font-display font-bold text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-text-primary leading-[1.05] mb-6">
+            <span className="section-eyebrow block mb-5">Phoenix Real Estate Photography & Videography</span>
             Listings That
             <br />
             <span className="text-gold">Sell Themselves</span>

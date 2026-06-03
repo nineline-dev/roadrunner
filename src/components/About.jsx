@@ -23,6 +23,9 @@ export default function About() {
             <p>
               <strong className="text-text-primary font-semibold">500+ properties</strong> photographed across the Valley. FAA-licensed drone pilot on every aerial shoot. Every shoot delivered within <strong className="text-text-primary font-semibold">24 hours</strong>, guaranteed.
             </p>
+            <p>
+              Whether it's a starter condo in Tempe, a luxury estate in Paradise Valley, or an Airbnb near Old Town Scottsdale, every shoot follows the same process: professional setup, meticulous HDR bracketing, and same-day editing delivered straight to your Aryeo media portal — MLS-ready within 24 hours of the shoot.
+            </p>
           </div>
         </div>
       </div>
