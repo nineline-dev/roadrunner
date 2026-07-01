@@ -45,6 +45,9 @@ export default function Hero() {
               href={ARYEO_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              data-track="cta_clicked"
+              data-track-cta-location="hero"
+              data-track-cta-kind="booking"
               className="bg-gold text-white font-body font-medium px-8 py-4 rounded-full text-base hover:bg-amber-600 transition-all duration-200 hover:shadow-xl hover:shadow-gold/30 hover:-translate-y-0.5 text-center"
             >
               Book a Shoot

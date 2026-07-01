@@ -103,6 +103,9 @@ export default function Footer() {
               href={ARYEO_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              data-track="cta_clicked"
+              data-track-cta-location="footer"
+              data-track-cta-kind="booking"
               className="inline-flex items-center gap-2 bg-gold text-white font-body font-medium text-sm px-5 py-2.5 rounded-full hover:bg-amber-600 transition-all duration-200"
             >
               Book Now

@@ -11,6 +11,7 @@ import CTABanner from './components/CTABanner'
 import FounderCard from './components/FounderCard'
 import Footer from './components/Footer'
 import MobileBookBar from './components/MobileBookBar'
+import GcsAnalyticsProvider from './analytics/GcsAnalyticsProvider'
 
 export default function App() {
   const [bannerDismissed, setBannerDismissed] = useState(
@@ -24,6 +25,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-bg-warm">
+      <GcsAnalyticsProvider />
       {!bannerDismissed && <AnnouncementBar onDismiss={handleDismiss} />}
       <Nav bannerOffset={!bannerDismissed} />
       <main className="pb-20 md:pb-0">
