@@ -1402,7 +1402,10 @@ var readQueryProperties = () => {
     "wbraid",
     "fbclid"
   ];
-  return Object.fromEntries(keys.map((key) => [key, params.get(key)]));
+  return {
+    ...Object.fromEntries(keys.map((key) => [key, params.get(key)])),
+    campaign_key: params.get("utm_campaign")
+  };
 };
 var readPageCategory = () => {
   if (!canUseBrowser()) return null;
