@@ -22,3 +22,13 @@ test('GA4 events can carry the URL campaign as a registered campaign_key dimensi
     assert.match(source, /campaign_key:\s*params\.get\(["']utm_campaign["']\)/)
   }
 })
+
+test('Roadrunner GA4 fallback sends campaign_key only when gtag collect is absent', () => {
+  const source = providerSource()
+
+  assert.match(source, /google-analytics\.com\/g\/collect/)
+  assert.match(source, /ep\.campaign_key/)
+  assert.match(source, /hasGa4CollectResource\(\)/)
+  assert.match(source, /gcs_ga4_fallback/)
+  assert.match(source, /getRandomValues/)
+})
