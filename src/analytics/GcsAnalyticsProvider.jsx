@@ -75,7 +75,6 @@ export default function GcsAnalyticsProvider() {
         'cta_clicked',
       ]),
       eventPipelineMode: env.VITE_EVENT_PIPELINE_MODE || 'first_party',
-      eventSink: env.VITE_EVENT_SINK || 'posthog',
       posthogMode: env.VITE_POSTHOG_MODE || 'cloud',
     })
 
