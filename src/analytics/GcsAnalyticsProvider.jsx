@@ -24,6 +24,85 @@ const firstPartyEndpoint = (value) => {
   return configured
 }
 
+const readStoredId = (key) => {
+  try {
+    return window.localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+const writeStoredId = (key, value) => {
+  try {
+    window.localStorage.setItem(key, value)
+  } catch {
+    // Storage can be disabled; the fallback still works with an in-memory id.
+  }
+}
+
+const fallbackId = () => {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID()
+  if (window.crypto?.getRandomValues) {
+    const bytes = window.crypto.getRandomValues(new Uint8Array(16))
+    return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
+  }
+  return `ga4-${Date.now()}-${Math.floor(window.performance?.now?.() || 0)}`
+}
+
+const ga4ClientId = () => {
+  const key = 'gcs_ga4_client_id'
+  const stored = readStoredId(key)
+  if (stored) return stored
+  const next = fallbackId()
+  writeStoredId(key, next)
+  return next
+}
+
+const hasGa4CollectResource = () => {
+  if (!window.performance?.getEntriesByType) return false
+  return window.performance.getEntriesByType('resource').some((entry) =>
+    /(?:google-analytics\.com|analytics\.google\.com)\/g\/collect/.test(entry.name)
+  )
+}
+
+const addGa4Param = (params, key, value) => {
+  if (value === undefined || value === null || value === '') return
+  params.set(key, String(value).slice(0, 100))
+}
+
+const sendGa4PageViewFallback = ({ measurementId, siteId, customerAccountId, globalId }) => {
+  if (!measurementId || typeof window === 'undefined' || hasGa4CollectResource()) return
+
+  const query = new URLSearchParams(window.location.search)
+  const params = new URLSearchParams({
+    v: '2',
+    tid: measurementId,
+    cid: ga4ClientId(),
+    ul: window.navigator.language || 'en-us',
+    sr: `${window.screen.width}x${window.screen.height}`,
+    en: 'page_view',
+    dl: window.location.href,
+    dt: document.title || '',
+    _p: String(Date.now()),
+  })
+
+  addGa4Param(params, 'ep.campaign_key', query.get('utm_campaign'))
+  addGa4Param(params, 'ep.utm_source', query.get('utm_source'))
+  addGa4Param(params, 'ep.utm_medium', query.get('utm_medium'))
+  addGa4Param(params, 'ep.utm_campaign', query.get('utm_campaign'))
+  addGa4Param(params, 'ep.site_id', siteId)
+  addGa4Param(params, 'ep.customer_account_id', customerAccountId)
+  addGa4Param(params, 'ep.global_id', globalId)
+  addGa4Param(params, 'ep.gcs_ga4_fallback', 'direct_collect')
+
+  const url = `https://www.google-analytics.com/g/collect?${params.toString()}`
+  if (window.navigator.sendBeacon) {
+    window.navigator.sendBeacon(url)
+    return
+  }
+  void fetch(url, { mode: 'no-cors', keepalive: true }).catch(() => undefined)
+}
+
 export default function GcsAnalyticsProvider() {
   useEffect(() => {
     const siteId = env.VITE_GCS_SITE_ID
@@ -77,8 +156,19 @@ export default function GcsAnalyticsProvider() {
       eventPipelineMode: env.VITE_EVENT_PIPELINE_MODE || 'first_party',
       posthogMode: env.VITE_POSTHOG_MODE || 'cloud',
     })
+    const ga4FallbackTimer = window.setTimeout(() => {
+      sendGa4PageViewFallback({
+        measurementId: env.VITE_GA_ID,
+        siteId,
+        customerAccountId,
+        globalId: env.VITE_GCS_GLOBAL_ID || undefined,
+      })
+    }, 3500)
 
-    return () => handle.cleanup()
+    return () => {
+      window.clearTimeout(ga4FallbackTimer)
+      handle.cleanup()
+    }
   }, [])
 
   return null
