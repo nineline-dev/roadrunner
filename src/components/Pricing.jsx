@@ -134,6 +134,10 @@ function PriceCard({ pkg }) {
           href={ARYEO_BOOKING_URL}
           target="_blank"
           rel="noopener noreferrer"
+          data-track="cta_clicked"
+          data-track-cta-location="pricing"
+          data-track-cta-kind="booking"
+          data-track-package-name={pkg.name}
           className={`w-full text-center font-body font-medium text-sm py-3.5 rounded-full transition-all duration-200 ${
             pkg.popular
               ? 'bg-gold text-white hover:bg-amber-600 hover:shadow-lg hover:shadow-gold/25'

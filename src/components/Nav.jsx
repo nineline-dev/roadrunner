@@ -80,6 +80,9 @@ export default function Nav({ bannerOffset = false }) {
               href={ARYEO_BOOKING_URL}
               target="_blank"
               rel="noopener noreferrer"
+              data-track="cta_clicked"
+              data-track-cta-location="nav_desktop"
+              data-track-cta-kind="booking"
               className="bg-gold text-white font-body font-medium text-sm px-5 py-2.5 rounded-full hover:bg-amber-600 transition-all duration-200 hover:shadow-lg hover:shadow-gold/25"
             >
               Book Now
@@ -139,6 +142,9 @@ export default function Nav({ bannerOffset = false }) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMenuOpen(false)}
+            data-track="cta_clicked"
+            data-track-cta-location="nav_mobile"
+            data-track-cta-kind="booking"
             className="mt-4 bg-gold text-white font-body font-medium text-lg px-8 py-4 rounded-full hover:bg-amber-600 transition-all duration-200"
           >
             Book Now
