@@ -78,6 +78,10 @@ interface StorefrontBaseEventProperties {
     global_id?: string | null;
     session_id: string;
     anonymous_id: string;
+    analytics_runtime_version?: string | null;
+    analytics_rollout_version?: string | null;
+    analytics_asset_sha?: string | null;
+    analytics_deployment_id?: string | null;
     page_url: string;
     path: string;
     referrer?: string | null;
@@ -204,9 +208,19 @@ interface StorefrontRuntimeConfig extends StorefrontDispatchConfig {
     posthogKey?: string;
     posthogHost?: string;
     globalId?: string | null;
+    deploymentId?: string | null;
+    analyticsRuntimeVersion?: string | null;
+    analyticsRolloutVersion?: string | null;
+    analyticsAssetSha?: string | null;
+    analyticsDeploymentId?: string | null;
+    analytics_runtime_version?: string | null;
+    analytics_rollout_version?: string | null;
+    analytics_asset_sha?: string | null;
+    analytics_deployment_id?: string | null;
     pageCategory?: string | null;
 }
 interface StorefrontRuntimeHandle {
+    getEventDestinations?: (name: StorefrontEventName) => EventDestination[];
     cleanup: () => void;
     track: (name: StorefrontEventName, properties?: Record<string, unknown>) => Promise<StorefrontValidationResult>;
     identify: (distinctId: string, properties?: Record<string, unknown>) => void;
