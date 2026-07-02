@@ -144,8 +144,6 @@ export default function GcsAnalyticsProvider() {
       },
       consentState: env.VITE_GCS_ANALYTICS_CONSENT_STATE || 'accepted_override',
       gaId: env.VITE_GA_ID,
-      posthogKey: env.VITE_POSTHOG_KEY,
-      posthogHost: env.VITE_POSTHOG_HOST,
       globalId: env.VITE_GCS_GLOBAL_ID || undefined,
       firstPartyEndpoint: endpoint,
       firstPartyBrowserIngestEnabled: readBool(env.VITE_GCS_FIRST_PARTY_BROWSER_INGEST_ENABLED, true),
@@ -154,7 +152,12 @@ export default function GcsAnalyticsProvider() {
         'cta_clicked',
       ]),
       eventPipelineMode: env.VITE_EVENT_PIPELINE_MODE || 'first_party',
-      posthogMode: env.VITE_POSTHOG_MODE || 'cloud',
+      eventSink: 'ga4',
+      analyticsRuntimeVersion: env.VITE_GCS_ANALYTICS_RUNTIME_VERSION || 'site-analytics-runtime-v1',
+      analyticsRolloutVersion:
+        env.VITE_GCS_ANALYTICS_ROLLOUT_VERSION || 'roadrunner-proxy-fanout-20260702',
+      analyticsAssetSha: env.VITE_GCS_ANALYTICS_ASSET_SHA || undefined,
+      analyticsDeploymentId: env.VITE_GCS_ANALYTICS_DEPLOYMENT_ID || undefined,
     })
     const ga4FallbackTimer = window.setTimeout(() => {
       sendGa4PageViewFallback({

@@ -1,5 +1,5 @@
 const MAX_BODY_BYTES = 64 * 1024
-const ALLOWED_ORIGINS = new Set(['www.roadrunner.media', 'roadrunner.media'])
+const DEFAULT_ALLOWED_ORIGINS = ['www.roadrunner.media', 'roadrunner.media']
 const ALLOWED_EVENT_NAMES = new Set(['page_view', 'cta_clicked'])
 const ALLOWED_EVENT_CLASSES = new Set(['DIAGNOSTIC', 'CONVERSION', 'FUNNEL', 'ENGAGEMENT', 'QUALITY'])
 const POSTHOG_PII_BLOCKLIST = new Set([
@@ -48,10 +48,19 @@ const originHost = (value) => {
   }
 }
 
+const allowedOrigins = () =>
+  new Set([
+    ...DEFAULT_ALLOWED_ORIGINS,
+    ...String(process.env.GCS_ANALYTICS_ALLOWED_ORIGINS || '')
+      .split(',')
+      .map((value) => value.trim().toLowerCase())
+      .filter(Boolean),
+  ])
+
 const isAllowedOrigin = (req) => {
   const origin = originHost(req.headers.origin)
   const host = String(req.headers.host || '').toLowerCase()
-  return Boolean(origin) && (origin === host || ALLOWED_ORIGINS.has(origin))
+  return Boolean(origin) && (origin === host || allowedOrigins().has(origin))
 }
 
 const isPlainObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value)
@@ -73,7 +82,7 @@ const limitedString = (value, maxLength) => {
 const isRoadrunnerPageUrl = (value) => {
   if (typeof value !== 'string' || value.trim() === '') return true
   try {
-    return ALLOWED_ORIGINS.has(new URL(value).host.toLowerCase())
+    return allowedOrigins().has(new URL(value).host.toLowerCase())
   } catch {
     return false
   }
@@ -124,7 +133,7 @@ const posthogEndpoint = (host) => {
 
 const sendToPosthog = async (event) => {
   const apiKey = process.env.GCS_POSTHOG_PROJECT_API_KEY
-  const endpoint = posthogEndpoint(process.env.GCS_POSTHOG_HOST || process.env.VITE_POSTHOG_HOST)
+  const endpoint = posthogEndpoint(process.env.GCS_POSTHOG_HOST)
   if (!apiKey || !endpoint) return { configured: false, ok: true }
 
   const properties = sanitizePosthogProperties({

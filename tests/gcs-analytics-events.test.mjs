@@ -118,6 +118,49 @@ test('rejects cross-origin browser writes', async () => {
   assert.match(res.body, /origin_not_allowed/)
 })
 
+test('allows approved brownfield origins from server env', async () => {
+  await withEnv(
+    {
+      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
+      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
+      GCS_ANALYTICS_SITE_ID: 'server-site-id',
+      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
+      GCS_ANALYTICS_ALLOWED_ORIGINS: 'customer.example',
+    },
+    async () => {
+      const calls = []
+      const previousFetch = globalThis.fetch
+      globalThis.fetch = async (...args) => {
+        calls.push(args)
+        return { ok: true, status: 202 }
+      }
+      try {
+        const req = new EventEmitter()
+        req.method = 'POST'
+        req.headers = { host: 'preview.example', origin: 'https://customer.example' }
+        req.body = {
+          event_name: 'cta_clicked',
+          payload: {
+            event_id: 'event-1',
+            page_url: 'https://customer.example/?proof=1',
+          },
+        }
+        const res = makeRes()
+
+        await handler(req, res)
+
+        assert.equal(res.statusCode, 202)
+        assert.equal(calls.length, 1)
+        const forwarded = JSON.parse(calls[0][1].body)
+        assert.equal(forwarded.event_name, 'cta_clicked')
+        assert.equal(forwarded.payload.site_id, 'server-site-id')
+      } finally {
+        globalThis.fetch = previousFetch
+      }
+    }
+  )
+})
+
 test('rejects writes without browser origin', async () => {
   const req = new EventEmitter()
   req.method = 'POST'

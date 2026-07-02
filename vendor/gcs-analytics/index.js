@@ -1407,6 +1407,21 @@ var readQueryProperties = () => {
     campaign_key: params.get("utm_campaign")
   };
 };
+var firstCleanString = (...values) => {
+  for (const value of values) {
+    if (typeof value !== "string") continue;
+    const trimmed = value.trim();
+    if (trimmed) return trimmed;
+  }
+  return void 0;
+};
+var withoutUndefined = (input) => Object.fromEntries(Object.entries(input).filter((entry) => entry[1] !== void 0 && entry[1] !== null && entry[1] !== ""));
+var buildRolloutVersionProperties = (config) => withoutUndefined({
+  analytics_runtime_version: firstCleanString(config.analyticsRuntimeVersion, config.analytics_runtime_version, "site-analytics-runtime-v1"),
+  analytics_rollout_version: firstCleanString(config.analyticsRolloutVersion, config.analytics_rollout_version),
+  analytics_asset_sha: firstCleanString(config.analyticsAssetSha, config.analytics_asset_sha),
+  analytics_deployment_id: firstCleanString(config.analyticsDeploymentId, config.analytics_deployment_id, config.deploymentId)
+});
 var readPageCategory = () => {
   if (!canUseBrowser()) return null;
   return document.querySelector('meta[name="page-category"]')?.getAttribute("content") ?? document.body?.dataset.pageCategory ?? null;
@@ -1421,6 +1436,7 @@ var buildBaseProperties = (config) => ({
   global_id: config.globalId ?? null,
   session_id: getSessionId(),
   anonymous_id: getAnonymousId(config),
+  ...buildRolloutVersionProperties(config),
   page_url: canUseBrowser() ? window.location.href : "",
   path: canUseBrowser() ? window.location.pathname : "",
   referrer: canUseBrowser() ? document.referrer || null : null,
@@ -1570,6 +1586,7 @@ var mountStorefrontAnalytics = (config) => {
   }
   void dispatcher.dispatch(buildEvent2(config, "page_view"));
   const handle = {
+    getEventDestinations: (eventName) => dispatcher.getEventDestinations(eventName),
     cleanup: () => {
       handles.forEach((observer) => observer.cleanup());
       if (window.gcsAnalytics === handle) delete window.gcsAnalytics;
