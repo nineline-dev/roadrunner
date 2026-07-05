@@ -8,10 +8,10 @@ export default function FounderCard() {
       <div className="max-w-xl mx-auto">
         <div ref={sectionRef} className="fade-up flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-8">
           <img
-            src="/images/colin-hero.png"
+            src="/images/colin-hero-display.webp"
             alt="Colin, Founder of Roadrunner Media"
-            width={112}
-            height={144}
+            width={448}
+            height={576}
             loading="lazy"
             decoding="async"
             className="w-28 h-36 rounded-xl object-cover object-left flex-shrink-0"

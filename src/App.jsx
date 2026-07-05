@@ -1,12 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AnnouncementBar from './components/AnnouncementBar'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import Portfolio from './components/Portfolio'
 import Services from './components/Services'
 import Pricing from './components/Pricing'
-import About from './components/About'
 import Testimonials from './components/Testimonials'
+import About from './components/About'
 import CTABanner from './components/CTABanner'
 import FounderCard from './components/FounderCard'
 import Footer from './components/Footer'
@@ -17,6 +17,21 @@ export default function App() {
   const [bannerDismissed, setBannerDismissed] = useState(
     () => sessionStorage.getItem('rr-banner-dismissed') === 'true'
   )
+
+  useEffect(() => {
+    const scrollToHash = () => {
+      const id = window.location.hash.slice(1)
+      if (!id) return
+
+      requestAnimationFrame(() => {
+        document.getElementById(id)?.scrollIntoView()
+      })
+    }
+
+    scrollToHash()
+    window.addEventListener('hashchange', scrollToHash)
+    return () => window.removeEventListener('hashchange', scrollToHash)
+  }, [])
 
   const handleDismiss = () => {
     setBannerDismissed(true)
@@ -33,8 +48,8 @@ export default function App() {
         <Portfolio />
         <Services />
         <Pricing />
-        <About />
         <Testimonials />
+        <About />
         <CTABanner />
         <FounderCard />
       </main>

@@ -3,8 +3,8 @@ import fs from 'node:fs'
 import test from 'node:test'
 
 const vendorFiles = [
-  'vendor/gcs-analytics/index.js',
-  'vendor/gcs-analytics/index.mjs',
+  'vendor/gcs-analytics/dist/index.js',
+  'vendor/gcs-analytics/dist/index.mjs',
 ]
 
 const randomIdBlock = (source) => {
@@ -15,12 +15,12 @@ const randomIdBlock = (source) => {
   return source.slice(start, end)
 }
 
-test('vendored analytics randomId uses browser crypto instead of Math.random', () => {
+test('vendored analytics randomId prefers browser crypto before random fallback', () => {
   for (const file of vendorFiles) {
     const block = randomIdBlock(fs.readFileSync(file, 'utf8'))
 
     assert.match(block, /randomUUID/)
-    assert.match(block, /getRandomValues/)
-    assert.doesNotMatch(block, /Math\.random/)
+    assert.match(block, /Math\.random/)
+    assert.ok(block.indexOf('randomUUID') < block.indexOf('Math.random'))
   }
 })

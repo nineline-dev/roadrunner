@@ -4,62 +4,29 @@ import { useScrollObserver } from '../hooks/useScrollObserver'
 const FILTERS = ['All', 'Photos', 'Videos']
 
 const portfolioItems = [
-  // New 2026 photos
-  { id: 36, type: 'photo', src: '/images/1.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Luxury living room with fireplace and built-ins, Phoenix AZ' },
-  { id: 37, type: 'photo', src: '/images/2.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Open-plan living room and kitchen, luxury Phoenix real estate' },
-  { id: 38, type: 'photo', src: '/images/3.jpg',                    w: 1920, h: 1281, category: 'Photos', alt: 'Modern kitchen with marble waterfall island, Phoenix AZ' },
-  { id: 39, type: 'photo', src: '/images/4.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Contemporary kitchen with dark cabinetry and wine fridge, Phoenix AZ' },
-  { id: 40, type: 'photo', src: '/images/5.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Living room with mountain views, Scottsdale AZ real estate' },
-  { id: 41, type: 'photo', src: '/images/6.jpg',                    w: 1920, h: 1103, category: 'Photos', alt: 'Outdoor stone fireplace with pool at dusk, Phoenix AZ' },
-  { id: 42, type: 'photo', src: '/images/7.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Luxury marble bathroom with freestanding tub, Scottsdale AZ' },
-  { id: 43, type: 'photo', src: '/images/8.jpg',                    w: 1920, h: 1280, category: 'Photos', alt: 'Resort-style pool at twilight, Camelback area Phoenix AZ' },
-  { id: 44, type: 'photo', src: '/images/9.jpg',                    w: 1920, h: 1080, category: 'Photos', alt: 'Aerial drone photography of Phoenix neighborhood with mountain views' },
-  { id: 45, type: 'photo', src: '/images/property-lounge.jpg',      w: 1920, h: 1280, category: 'Photos', alt: 'Modern reading lounge with floor-to-ceiling windows, Phoenix AZ' },
-  { id: 46, type: 'photo', src: '/images/property-living-pool.jpg', w: 1920, h: 1157, category: 'Photos', alt: 'Open living room flowing to pool and patio, Phoenix AZ' },
-  { id: 47, type: 'photo', src: '/images/property-game-room.jpg',   w: 1920, h: 1188, category: 'Photos', alt: 'Game room with pool table and open kitchen, Scottsdale AZ' },
-  // Photos — real compressed files
-  { id: 1,  type: 'photo', src: '/images/_DSC2963-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR interior living room, Phoenix AZ real estate photography' },
-  { id: 2,  type: 'photo', src: '/images/_DSC2969-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR kitchen photography for Phoenix listing' },
-  { id: 3,  type: 'photo', src: '/images/_DSC2984-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Professional bedroom photography, Scottsdale AZ real estate' },
-  { id: 4,  type: 'photo', src: '/images/_DSC3008-HDR.jpg', w: 1920, h: 1191, category: 'Photos', alt: 'HDR exterior front-of-home photography, Phoenix AZ' },
-  { id: 5,  type: 'photo', src: '/images/_DSC3021-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Real estate interior photography, open-plan living area Phoenix' },
-  { id: 6,  type: 'photo', src: '/images/_DSC3155-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR bathroom photography for luxury listing, Phoenix AZ' },
-  { id: 7,  type: 'photo', src: '/images/_DSC3186-HDR.jpg', w: 1920, h: 1129, category: 'Photos', alt: 'Professional dining room photography, Scottsdale real estate' },
-  { id: 8,  type: 'photo', src: '/images/_DSC3253-HDR.jpg', w: 1920, h: 1173, category: 'Photos', alt: 'HDR exterior patio photography, Phoenix AZ listing' },
-  { id: 9,  type: 'photo', src: '/images/_DSC3256-HDR.jpg', w: 1920, h: 1102, category: 'Photos', alt: 'Real estate pool and backyard photography, Phoenix AZ' },
-  { id: 10, type: 'photo', src: '/images/_DSC3271-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR master bedroom photography, luxury Phoenix real estate' },
-  { id: 11, type: 'photo', src: '/images/_DSC3276-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Professional home office photography for Phoenix listing' },
-  { id: 12, type: 'photo', src: '/images/_DSC3288-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR garage and entry photography, Phoenix AZ real estate' },
-  { id: 13, type: 'photo', src: '/images/_DSC5031-HDR.jpg', w: 1920, h: 1033, category: 'Photos', alt: 'Real estate living room photography, Chandler AZ listing' },
-  { id: 14, type: 'photo', src: '/images/_DSC5053-HDR.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'HDR kitchen and island photography, Scottsdale AZ' },
-  { id: 15, type: 'photo', src: '/images/_DSC5095-HDR.jpg', w: 1920, h: 1074, category: 'Photos', alt: 'Professional exterior photography, Tempe AZ real estate listing' },
-  { id: 16, type: 'photo', src: '/images/_DSC5675.jpg',     w: 1920, h: 1284, category: 'Photos', alt: 'Luxury exterior real estate photography, Phoenix AZ' },
-  { id: 17, type: 'photo', src: '/images/_DSC5681.jpg',     w: 1920, h: 1282, category: 'Photos', alt: 'High-end living room photography for Phoenix real estate listing' },
-  { id: 18, type: 'photo', src: '/images/_DSC5684.jpg',     w: 1920, h: 1287, category: 'Photos', alt: 'HDR interior photography, Mesa AZ real estate' },
-  { id: 19, type: 'photo', src: '/images/_DSC5687.jpg',     w: 1920, h: 1281, category: 'Photos', alt: 'Professional real estate photography, Phoenix AZ backyard' },
-  { id: 20, type: 'photo', src: '/images/_DSC9656.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'HDR exterior home photography, Glendale AZ real estate' },
-  { id: 21, type: 'photo', src: '/images/_DSC9665.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Real estate kitchen photography, Phoenix AZ listing' },
-  { id: 22, type: 'photo', src: '/images/_DSC9668.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Professional bathroom photography for Scottsdale listing' },
-  { id: 23, type: 'photo', src: '/images/_DSC9671.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'HDR bedroom photography, luxury real estate Phoenix AZ' },
-  { id: 24, type: 'photo', src: '/images/_DSC9680.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Real estate living area photography, Peoria AZ listing' },
-  { id: 25, type: 'photo', src: '/images/_DSC9689.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Professional exterior twilight photography, Phoenix real estate' },
-  { id: 26, type: 'photo', src: '/images/_DSC9703.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'HDR interior photography with natural light, Scottsdale AZ' },
-  { id: 27, type: 'photo', src: '/images/_DSC9808.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Luxury real estate photography, Phoenix AZ home listing' },
-  { id: 28, type: 'photo', src: '/images/_DSC9841.jpg',     w: 1920, h: 1280, category: 'Photos', alt: 'Professional real estate photography, Tempe AZ property' },
-  // Videos
-  { id: 48, type: 'video', src: '/videos/portfolio-video-2.mp4', poster: '/images/thumb-portfolio-video-2.jpg', w: 800,  h: 1422, category: 'Videos', alt: 'Agent reel — real estate video marketing Phoenix AZ' },
-  { id: 49, type: 'video', src: '/videos/portfolio-video-3.mp4', poster: '/images/thumb-portfolio-video-3.jpg', w: 800,  h: 1422, category: 'Videos', alt: 'Property walkthrough reel, Phoenix AZ' },
-  { id: 50, type: 'video', src: '/videos/portfolio-video-4.mp4', poster: '/images/thumb-portfolio-video-4.jpg', w: 800,  h: 1422, category: 'Videos', alt: 'Agent intro video, luxury listing Phoenix AZ' },
-  { id: 29, type: 'video', src: '/videos/elizabeth-reel.mp4',   poster: '/images/thumb-elizabeth-reel.jpg',        w: 1080, h: 1920, category: 'Videos', alt: 'Elizabeth property reel' },
-  { id: 30, type: 'video', src: '/videos/daniel-reel.mp4',      poster: '/images/thumb-daniel-reel.jpg',           w: 1080, h: 1920, category: 'Videos', alt: 'Daniel, Lauren, Monica & Jordan reel' },
-  { id: 31, type: 'video', src: '/videos/2ahead.mp4',           poster: '/images/thumb-2ahead.jpg',                w: 1080, h: 1920, category: 'Videos', alt: '2Ahead property showcase' },
-  { id: 32, type: 'video', src: '/videos/josh-main-reel.mp4',   poster: '/images/thumb-josh-main-reel.jpg',        w: 1080, h: 1920, category: 'Videos', alt: 'Josh main reel' },
-  { id: 33, type: 'video', src: '/videos/josh-airbnb.mp4',      poster: '/images/thumb-josh-airbnb.jpg',           w: 1920, h: 1080, category: 'Videos', alt: 'Josh AirBnB showcase' },
-  { id: 34, type: 'video', src: '/videos/bre-reel.mp4',         poster: '/images/thumb-bre-reel.jpg',              w: 1080, h: 1920, category: 'Videos', alt: 'Bre reel' },
-  { id: 35, type: 'video', src: '/videos/jordan-page-reel.mp4', poster: '/images/thumb-jordan-page-reel.jpg',      w: 1080, h: 1920, category: 'Videos', alt: 'Jordan Page reel' },
+  { id: 1, type: 'photo', src: '/images/1.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Luxury living room with fireplace and built-ins, Phoenix AZ' },
+  { id: 2, type: 'photo', src: '/images/2.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Open-plan living room and kitchen, luxury Phoenix real estate' },
+  { id: 3, type: 'photo', src: '/images/3.jpg', w: 1920, h: 1281, category: 'Photos', alt: 'Modern kitchen with marble waterfall island, Phoenix AZ' },
+  { id: 4, type: 'photo', src: '/images/4.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Contemporary kitchen with dark cabinetry and wine fridge, Phoenix AZ' },
+  { id: 5, type: 'photo', src: '/images/5.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Living room with mountain views, Scottsdale AZ real estate' },
+  { id: 6, type: 'photo', src: '/images/6.jpg', w: 1920, h: 1103, category: 'Photos', alt: 'Outdoor stone fireplace with pool at dusk, Phoenix AZ' },
+  { id: 7, type: 'photo', src: '/images/7.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Luxury marble bathroom with freestanding tub, Scottsdale AZ' },
+  { id: 8, type: 'photo', src: '/images/8.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Resort-style pool at twilight, Camelback area Phoenix AZ' },
+  { id: 9, type: 'photo', src: '/images/9.jpg', w: 1920, h: 1080, category: 'Photos', alt: 'Aerial drone photography of Phoenix neighborhood with mountain views' },
+  { id: 10, type: 'photo', src: '/images/hero.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Luxury kitchen photographed by Roadrunner Media, Phoenix AZ' },
+  { id: 11, type: 'photo', src: '/images/property-living-pool.jpg', w: 1920, h: 1157, category: 'Photos', alt: 'Open living room flowing to pool and patio, Phoenix AZ' },
+  { id: 12, type: 'photo', src: '/images/property-game-room.jpg', w: 1920, h: 1188, category: 'Photos', alt: 'Game room with pool table and open kitchen, Scottsdale AZ' },
+  { id: 13, type: 'photo', src: '/images/property-lounge.jpg', w: 1920, h: 1280, category: 'Photos', alt: 'Modern reading lounge with floor-to-ceiling windows, Phoenix AZ' },
+  { id: 14, type: 'video', src: '/videos/hero-video.mp4', poster: '/images/thumb-hero-video.jpg', w: 608, h: 1080, category: 'Videos', alt: 'Hero video for Roadrunner Media real estate marketing' },
+  { id: 15, type: 'video', src: '/videos/portfolio-video-2.mp4', poster: '/images/thumb-portfolio-video-2.jpg', w: 800, h: 1422, category: 'Videos', alt: 'Agent reel - real estate video marketing Phoenix AZ' },
+  { id: 16, type: 'video', src: '/videos/portfolio-video-3.mp4', poster: '/images/thumb-portfolio-video-3.jpg', w: 800, h: 1422, category: 'Videos', alt: 'Property walkthrough reel, Phoenix AZ' },
+  { id: 17, type: 'video', src: '/videos/portfolio-video-4.mp4', poster: '/images/thumb-portfolio-video-4.jpg', w: 800, h: 1422, category: 'Videos', alt: 'Agent intro video, luxury listing Phoenix AZ' },
 ]
 
-const INITIAL_SHOW = 9
+const gridImageSrc = (item) => {
+  const imageSrc = item.type === 'video' ? item.poster : item.src
+  return imageSrc.replace('/images/', '/images/grid/').replace(/\.jpg$/, '.webp')
+}
 
 function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
   useEffect(() => {
@@ -105,12 +72,14 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <img
-          src={item.src}
-          alt={item.alt}
-          className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
-          onClick={(e) => e.stopPropagation()}
-        />
+        <picture onClick={(e) => e.stopPropagation()}>
+          <source srcSet={item.src.replace(/\.jpg$/, '.webp')} type="image/webp" />
+          <img
+            src={item.src}
+            alt={item.alt}
+            className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
+          />
+        </picture>
       )}
 
       <button
@@ -132,14 +101,12 @@ function LightboxModal({ item, index, total, onClose, onPrev, onNext }) {
 
 export default function Portfolio() {
   const [activeFilter, setActiveFilter] = useState('All')
-  const [showAll, setShowAll] = useState(false)
   const [lightbox, setLightbox] = useState(null)
   const sectionRef = useScrollObserver()
 
   const filtered = portfolioItems.filter(
     (item) => activeFilter === 'All' || item.category === activeFilter
   )
-  const visible = showAll ? filtered : filtered.slice(0, INITIAL_SHOW)
 
   const openLightbox = (item) => {
     const idx = filtered.findIndex((i) => i.id === item.id)
@@ -166,7 +133,7 @@ export default function Portfolio() {
           {FILTERS.map((filter) => (
             <button
               key={filter}
-              onClick={() => { setActiveFilter(filter); setShowAll(false) }}
+              onClick={() => setActiveFilter(filter)}
               className={`font-body font-medium text-sm px-5 py-2 rounded-full border transition-all duration-200 ${
                 activeFilter === filter
                   ? 'bg-gold border-gold text-white shadow-md shadow-gold/20'
@@ -178,30 +145,23 @@ export default function Portfolio() {
           ))}
         </div>
 
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {visible.map((item) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((item, index) => (
             <div
               key={item.id}
-              className="break-inside-avoid group relative overflow-hidden rounded-xl cursor-pointer"
+              className="group relative aspect-[4/3] overflow-hidden rounded-xl cursor-pointer bg-stone-200"
               onClick={() => openLightbox(item)}
             >
-              <picture>
-                <source
-                  srcSet={(item.type === 'video' ? item.poster : item.src).replace(/\.jpg$/, '.webp')}
-                  type="image/webp"
-                />
-                <img
-                  src={item.type === 'video' ? item.poster : item.src}
-                  alt={item.alt}
-                  width={item.w}
-                  height={item.h}
-                  loading={item.id <= 3 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  className="w-full block"
-                />
-              </picture>
+              <img
+                src={gridImageSrc(item)}
+                alt={item.alt}
+                width={1200}
+                height={900}
+                loading={index < 9 ? 'eager' : 'lazy'}
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
 
-              {/* Hover overlay */}
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-center justify-center">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   {item.type === 'video' ? (
@@ -217,7 +177,6 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              {/* Video badge */}
               {item.type === 'video' && (
                 <span className="absolute bottom-3 left-3 bg-black/65 text-white text-xs font-body font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 backdrop-blur-sm">
                   <svg className="w-3 h-3 flex-shrink-0" viewBox="0 0 12 12" fill="currentColor">
@@ -229,17 +188,6 @@ export default function Portfolio() {
             </div>
           ))}
         </div>
-
-        {filtered.length > INITIAL_SHOW && (
-          <div className="text-center mt-12">
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="btn-outline-dark"
-            >
-              {showAll ? 'Show Less' : `View More (${filtered.length - INITIAL_SHOW} more)`}
-            </button>
-          </div>
-        )}
       </div>
 
       {lightbox !== null && (

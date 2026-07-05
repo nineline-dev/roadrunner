@@ -1,7 +1,8 @@
 const MAX_BODY_BYTES = 64 * 1024
 const DEFAULT_ALLOWED_ORIGINS = ['www.roadrunner.media', 'roadrunner.media']
-const ALLOWED_EVENT_NAMES = new Set(['page_view', 'cta_clicked'])
+const ALLOWED_EVENT_NAMES = new Set(['page_view', 'cta_clicked', 'email_clicked'])
 const ALLOWED_EVENT_CLASSES = new Set(['DIAGNOSTIC', 'CONVERSION', 'FUNNEL', 'ENGAGEMENT', 'QUALITY'])
+const DEFAULT_CANONICAL_ORIGIN = 'https://www.roadrunner.media'
 const POSTHOG_PII_BLOCKLIST = new Set([
   'email',
   'phone',
@@ -73,16 +74,22 @@ const parseBody = (body) => {
   return parsed
 }
 
+const parseEvents = (body) => {
+  if (Array.isArray(body.events)) return body.events.filter(isPlainObject)
+  return [body]
+}
+
 const limitedString = (value, maxLength) => {
   if (typeof value !== 'string') return undefined
   const trimmed = value.trim()
   return trimmed ? trimmed.slice(0, maxLength) : undefined
 }
 
-const isRoadrunnerPageUrl = (value) => {
+const isRoadrunnerPageUrl = (value, requestHost = '') => {
   if (typeof value !== 'string' || value.trim() === '') return true
   try {
-    return allowedOrigins().has(new URL(value).host.toLowerCase())
+    const pageHost = new URL(value).host.toLowerCase()
+    return pageHost === requestHost || allowedOrigins().has(pageHost)
   } catch {
     return false
   }
@@ -93,14 +100,14 @@ const sanitizePosthogProperties = (properties) =>
     Object.entries(properties).filter(([key, value]) => !POSTHOG_PII_BLOCKLIST.has(key) && value !== undefined)
   )
 
-const buildScopedEvent = (input, identity) => {
+const buildScopedEvent = (input, identity, requestHost = '') => {
   const eventName = limitedString(input.event_name, 80)
   if (!eventName || !ALLOWED_EVENT_NAMES.has(eventName)) {
     throw new Error('event_not_allowed')
   }
 
   const payload = isPlainObject(input.payload) ? input.payload : {}
-  if (!isRoadrunnerPageUrl(payload.page_url)) {
+  if (!isRoadrunnerPageUrl(payload.page_url, requestHost)) {
     throw new Error('page_url_not_allowed')
   }
 
@@ -110,6 +117,7 @@ const buildScopedEvent = (input, identity) => {
     ...payload,
     site_id: identity.siteId,
     customer_account_id: identity.customerAccountId,
+    canonical_origin: identity.canonicalOrigin,
   }
 
   if (identity.globalId) scopedPayload.global_id = identity.globalId
@@ -124,8 +132,6 @@ const buildScopedEvent = (input, identity) => {
   }
 }
 
-const buildUpstreamBody = (event) => JSON.stringify(event)
-
 const posthogEndpoint = (host) => {
   const normalized = (host || 'https://us.posthog.com').replace(/\/+$/, '')
   return /^https:\/\//i.test(normalized) ? `${normalized}/capture/` : null
@@ -136,12 +142,19 @@ const sendToPosthog = async (event) => {
   const endpoint = posthogEndpoint(process.env.GCS_POSTHOG_HOST)
   if (!apiKey || !endpoint) return { configured: false, ok: true }
 
+  const groups = {
+    customer_account: event.payload.customer_account_id,
+  }
+  if (event.payload.global_id) groups.global_entity = event.payload.global_id
+
   const properties = sanitizePosthogProperties({
     ...event.payload,
     event_class: event.event_class,
     source_of_truth: event.source_of_truth,
     dedupe_key: event.dedupe_key,
-    gcs_layer: 'roadrunner_proxy',
+    gcs_event_name: event.event_name,
+    gcs_layer: 'gcs_canonical',
+    $groups: groups,
   })
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -183,14 +196,19 @@ export default async function handler(req, res) {
     return
   }
 
-  let event
+  let events
   try {
     const rawBody = req.body || (await readBody(req))
-    event = buildScopedEvent(parseBody(rawBody), {
-      siteId,
-      customerAccountId,
-      globalId: process.env.GCS_ANALYTICS_GLOBAL_ID,
-    })
+    const parsedBody = parseBody(rawBody)
+    events = parseEvents(parsedBody).map((input) =>
+      buildScopedEvent(input, {
+        siteId,
+        customerAccountId,
+        globalId: process.env.GCS_ANALYTICS_GLOBAL_ID,
+        canonicalOrigin: process.env.GCS_ANALYTICS_CANONICAL_ORIGIN || DEFAULT_CANONICAL_ORIGIN,
+      }, String(req.headers.host || '').toLowerCase())
+    )
+    if (events.length === 0) throw new Error('invalid_json')
   } catch (error) {
     if (error?.message === 'payload_too_large') {
       json(res, 413, { ok: false, error: 'invalid_body' })
@@ -205,18 +223,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const upstream = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'x-gcs-analytics-token': token,
-      },
-      body: buildUpstreamBody(event),
-    })
-    const posthog = await sendToPosthog(event).catch(() => ({ configured: true, ok: false, status: 0 }))
-    json(res, upstream.ok ? 202 : upstream.status, {
-      ok: upstream.ok,
-      posthog: posthog.configured ? { ok: posthog.ok, status: posthog.status } : { configured: false },
+    const upstreamResults = []
+    const posthogResults = []
+    for (const event of events) {
+      const upstream = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-gcs-analytics-token': token,
+        },
+        body: JSON.stringify(event),
+      })
+      upstreamResults.push({ ok: upstream.ok, status: upstream.status })
+      posthogResults.push(await sendToPosthog(event).catch(() => ({ configured: true, ok: false, status: 0 })))
+    }
+
+    const upstreamOk = upstreamResults.every((result) => result.ok)
+    const upstreamStatus = upstreamResults.find((result) => !result.ok)?.status || 202
+    const configuredPosthog = posthogResults.filter((result) => result.configured)
+    json(res, upstreamOk ? 202 : upstreamStatus, {
+      ok: upstreamOk,
+      accepted: upstreamResults.filter((result) => result.ok).length,
+      posthog: configuredPosthog.length > 0 ? {
+        ok: configuredPosthog.every((result) => result.ok),
+        count: configuredPosthog.length,
+        statuses: [...new Set(configuredPosthog.map((result) => result.status))],
+      } : { configured: false },
     })
   } catch {
     json(res, 502, { ok: false, error: 'analytics_upstream_unavailable' })
