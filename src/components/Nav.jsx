@@ -8,12 +8,16 @@ const navLinks = [
 ]
 
 export default function Nav({ bannerOffset = false }) {
-  const [scrolled, setScrolled] = useState(false)
+  const [scrolled, setScrolled] = useState(() => (
+    typeof window !== 'undefined' ? window.scrollY > 80 : false
+  ))
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const hero = document.getElementById('hero')
     if (!hero) return
+
+    setScrolled(hero.getBoundingClientRect().bottom < window.innerHeight * 0.1)
 
     const observer = new IntersectionObserver(
       ([entry]) => setScrolled(!entry.isIntersecting),
@@ -54,8 +58,10 @@ export default function Nav({ bannerOffset = false }) {
             }`}
           >
             <img
-              src="/images/logo-roadrunner.png"
+              src="/images/logo-roadrunner-display.png"
               alt="Roadrunner Media"
+              width={218}
+              height={128}
               className={`h-8 w-auto transition-all duration-300 ${
                 scrolled ? '' : 'brightness-0 invert'
               }`}
@@ -112,7 +118,7 @@ export default function Nav({ bannerOffset = false }) {
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-border">
           <span className="flex items-center gap-3 font-display font-bold text-xl tracking-[0.2em] text-text-primary">
-            <img src="/images/logo-roadrunner.png" alt="Roadrunner Media" className="h-8 w-auto" />
+            <img src="/images/logo-roadrunner-display.png" alt="Roadrunner Media" width={218} height={128} className="h-8 w-auto" />
             ROADRUNNER MEDIA
           </span>
           <button

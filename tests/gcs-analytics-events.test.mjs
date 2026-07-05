@@ -89,6 +89,7 @@ test('forwards analytics body with server-side ingest token only', async () => {
         assert.equal(forwarded.payload.site_id, 'server-site-id')
         assert.equal(forwarded.payload.customer_account_id, 'server-customer-id')
         assert.equal(forwarded.payload.global_id, 'server-global-id')
+        assert.equal(forwarded.payload.canonical_origin, 'https://www.roadrunner.media')
         assert.equal(forwarded.unexpected, undefined)
         assert.equal(calls[1][0], 'https://posthog.example.test/capture/')
         const posthog = JSON.parse(calls[1][1].body)
@@ -97,7 +98,50 @@ test('forwards analytics body with server-side ingest token only', async () => {
         assert.equal(posthog.properties.site_id, 'server-site-id')
         assert.equal(posthog.properties.customer_account_id, 'server-customer-id')
         assert.equal(posthog.properties.global_id, 'server-global-id')
+        assert.equal(posthog.properties.gcs_event_name, 'page_view')
+        assert.equal(posthog.properties.gcs_layer, 'gcs_canonical')
+        assert.equal(posthog.properties.$groups.customer_account, 'server-customer-id')
+        assert.equal(posthog.properties.$groups.global_entity, 'server-global-id')
         assert.equal(posthog.properties.email, undefined)
+      } finally {
+        globalThis.fetch = previousFetch
+      }
+    }
+  )
+})
+
+test('accepts batched first-party events including email clicks', async () => {
+  await withEnv(
+    {
+      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
+      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
+      GCS_ANALYTICS_SITE_ID: 'server-site-id',
+      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
+    },
+    async () => {
+      const calls = []
+      const previousFetch = globalThis.fetch
+      globalThis.fetch = async (...args) => {
+        calls.push(args)
+        return { ok: true, status: 202 }
+      }
+      try {
+        const req = new EventEmitter()
+        req.method = 'POST'
+        req.headers = { host: 'www.roadrunner.media', origin: 'https://www.roadrunner.media' }
+        req.body = {
+          events: [
+            { event_name: 'page_view', payload: { event_id: 'event-1', page_url: 'https://www.roadrunner.media/' } },
+            { event_name: 'email_clicked', payload: { event_id: 'event-2', page_url: 'https://www.roadrunner.media/' } },
+          ],
+        }
+        const res = makeRes()
+
+        await handler(req, res)
+
+        assert.equal(res.statusCode, 202)
+        assert.deepEqual(calls.map((call) => JSON.parse(call[1].body).event_name), ['page_view', 'email_clicked'])
+        assert.equal(JSON.parse(res.body).accepted, 2)
       } finally {
         globalThis.fetch = previousFetch
       }

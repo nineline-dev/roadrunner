@@ -17,7 +17,7 @@ export default function Hero() {
             height={1280}
             className="w-full h-full object-cover object-center"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
           />
         </picture>
         {/* Soft right-edge blend into content panel */}
