@@ -15,12 +15,13 @@ const randomIdBlock = (source) => {
   return source.slice(start, end)
 }
 
-test('vendored analytics randomId prefers browser crypto before random fallback', () => {
+test('vendored analytics randomId avoids Math.random fallback', () => {
   for (const file of vendorFiles) {
     const block = randomIdBlock(fs.readFileSync(file, 'utf8'))
 
     assert.match(block, /randomUUID/)
-    assert.match(block, /Math\.random/)
-    assert.ok(block.indexOf('randomUUID') < block.indexOf('Math.random'))
+    assert.match(block, /getCryptoRandomValues/)
+    assert.doesNotMatch(block, /Math\.random/)
+    assert.ok(block.indexOf('randomUUID') < block.indexOf('getCryptoRandomValues'))
   }
 })

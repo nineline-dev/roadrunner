@@ -1862,11 +1862,16 @@ var resolvePosthogDistinctId = (properties) => {
   }
   return "anonymous";
 };
+var trimTrailingSlashes = (value) => {
+  let end = value.length;
+  while (end > 0 && value[end - 1] === "/") end -= 1;
+  return value.slice(0, end);
+};
 var capturePosthogDirect = async (config, eventName, properties) => {
   if (!config.posthogKey || !isSameOriginPosthogProxy(config.posthogHost)) return false;
   const fetchImpl = config.fetchImpl ?? (typeof fetch === "function" ? fetch : void 0);
   if (!fetchImpl) return false;
-  const host = config.posthogHost?.replace(/\/+$/, "") || "";
+  const host = trimTrailingSlashes(config.posthogHost || "");
   const response = await fetchImpl(`${host}/capture`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -2019,7 +2024,7 @@ var shouldSampleEvent = (profile, eventName) => {
   const rate = resolveSampleRate(profile, eventName, definition.pack);
   if (rate >= 1) return true;
   if (rate <= 0) return false;
-  return Math.random() <= rate;
+  return randomUnit() <= rate;
 };
 var getEventDestinations = (profile, eventName, eventSink) => {
   const definition = getSiteAnalyticsEventDefinition(eventName);
@@ -2454,7 +2459,7 @@ var detectBrowser = (userAgent) => {
   if (chrome) return { family: "Chrome", version: chrome[1]?.split(".")[0] };
   const firefox = value.match(/(?:Firefox|FxiOS)\/([0-9.]+)/);
   if (firefox) return { family: "Firefox", version: firefox[1]?.split(".")[0] };
-  const safari = value.match(/Version\/([0-9.]+).*Safari/);
+  const safari = value.includes("Safari") ? value.match(/Version\/([0-9.]+)/) : null;
   if (safari) return { family: "Safari", version: safari[1]?.split(".")[0] };
   return {};
 };
@@ -3549,11 +3554,16 @@ var resolveFetchMethod = (input, init) => {
   const candidate = init?.method || (typeof Request !== "undefined" && input instanceof Request ? input.method : void 0) || "GET";
   return candidate.toUpperCase().slice(0, 16);
 };
+var isHostnameOrSubdomain = (hostname, domain) => {
+  const normalized = hostname.toLowerCase();
+  return normalized === domain || normalized.endsWith("." + domain);
+};
+var isKnownAnalyticsHostname = (hostname) => isHostnameOrSubdomain(hostname, "posthog.com") || isHostnameOrSubdomain(hostname, "googletagmanager.com") || isHostnameOrSubdomain(hostname, "google-analytics.com");
 var shouldIgnoreApiEndpoint = (endpoint) => {
   if (!endpoint) return true;
   try {
     const url = new URL(endpoint, typeof window !== "undefined" ? window.location.href : "https://invalid.local/");
-    return url.pathname.startsWith("/_gcs/e") || url.pathname === "/api/analytics/events" || url.pathname.endsWith("/api/analytics/events") || url.hostname.includes("posthog.com") || url.hostname.includes("googletagmanager.com") || url.hostname.includes("google-analytics.com");
+    return url.pathname.startsWith("/_gcs/e") || url.pathname === "/api/analytics/events" || url.pathname.endsWith("/api/analytics/events") || isKnownAnalyticsHostname(url.hostname);
   } catch {
     return true;
   }
@@ -4174,6 +4184,21 @@ var removeStorageItem = (kind, key) => {
   } catch {
   }
 };
+var getCryptoRandomValues = (bytes) => {
+  try {
+    if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+      crypto.getRandomValues(bytes);
+      return true;
+    }
+  } catch {
+  }
+  return false;
+};
+var randomUnit = () => {
+  const bytes = new Uint32Array(1);
+  return getCryptoRandomValues(bytes) ? bytes[0] / 4294967296 : 1;
+};
+var randomIdCounter = 0;
 var randomId = () => {
   try {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -4181,7 +4206,14 @@ var randomId = () => {
     }
   } catch {
   }
-  return String(Date.now()) + "-" + Math.random().toString(16).slice(2);
+  const bytes = new Uint8Array(16);
+  if (getCryptoRandomValues(bytes)) {
+    bytes[6] = bytes[6] & 15 | 64;
+    bytes[8] = bytes[8] & 63 | 128;
+    return [...bytes].map((value) => value.toString(16).padStart(2, "0")).join("");
+  }
+  randomIdCounter = (randomIdCounter + 1) % Number.MAX_SAFE_INTEGER;
+  return String(Date.now()) + "-" + randomIdCounter.toString(16);
 };
 var readCookie = (name) => {
   if (!canUseBrowser2()) return null;
@@ -4981,8 +5013,15 @@ var sanitizeRuntimePosthogBeforeSendEvent = (event, config) => {
 };
 var resolvePosthogUiHost = (apiHost, uiHost) => {
   if (uiHost) return uiHost;
-  if (apiHost && /^https?:\/\//.test(apiHost) && !apiHost.includes("posthog.com")) return apiHost;
-  if (apiHost?.includes("eu.")) return "https://eu.posthog.com";
+  if (apiHost && /^https?:\/\//.test(apiHost)) {
+    let hostname = "";
+    try {
+      hostname = new URL(apiHost).hostname.toLowerCase();
+    } catch {
+    }
+    if (!isHostnameOrSubdomain(hostname, "posthog.com")) return apiHost;
+    if (hostname === "eu.posthog.com" || hostname.startsWith("eu.")) return "https://eu.posthog.com";
+  }
   return "https://us.posthog.com";
 };
 var shouldDisablePosthogCompression = (apiHost, config) => {
