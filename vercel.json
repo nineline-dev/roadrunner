@@ -29,7 +29,7 @@
     {
       "source": "/(.*)",
       "missing": [
-        { "type": "query", "key": "embed", "value": "9line" }
+        { "type": "query", "key": "embed", "value": "^9line$" }
       ],
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
@@ -43,7 +43,7 @@
     {
       "source": "/(.*)",
       "has": [
-        { "type": "query", "key": "embed", "value": "9line" }
+        { "type": "query", "key": "embed", "value": "^9line$" }
       ],
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },

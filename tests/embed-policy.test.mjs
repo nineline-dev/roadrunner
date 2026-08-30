@@ -4,7 +4,7 @@ import test from 'node:test'
 
 const config = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8'))
 const matchesEmbed = (condition) =>
-  condition?.type === 'query' && condition.key === 'embed' && condition.value === '9line'
+  condition?.type === 'query' && condition.key === 'embed' && condition.value === '^9line$'
 const headerValue = (rule, key) => rule.headers.find((header) => header.key === key)?.value
 
 test('only the owned 9Line embed mode relaxes Roadrunner framing', () => {
