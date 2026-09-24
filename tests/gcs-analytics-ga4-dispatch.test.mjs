@@ -66,16 +66,18 @@ test('Roadrunner browser CSP does not allow direct PostHog traffic', () => {
 })
 
 test('Roadrunner browser CSP admits every origin the native runtime uses', () => {
+  // Exact source-list membership (not substring matching) for each directive.
+  const allows = (sources, source) => sources.some((entry) => entry === source)
   for (const csp of cspDirectives()) {
     // Runtime asset, PostHog extensions (/_gcs/e/static) and remote config are same-origin.
-    assert.ok(csp['script-src'].includes("'self'"))
-    assert.ok(csp['script-src'].includes('https://www.googletagmanager.com'))
+    assert.ok(allows(csp['script-src'], "'self'"))
+    assert.ok(allows(csp['script-src'], 'https://www.googletagmanager.com'))
     // PostHog (/_gcs/e) and the site-config route are same-origin; the runtime's fallback
     // live-config URL and GA4 collection are cross-origin.
-    assert.ok(csp['connect-src'].includes("'self'"))
-    assert.ok(csp['connect-src'].includes(new URL('https://api.9line.dev/api/analytics/site-config').origin))
-    assert.ok(csp['connect-src'].includes('https://www.google-analytics.com'))
-    assert.ok(csp['connect-src'].includes('https://region1.google-analytics.com'))
+    assert.ok(allows(csp['connect-src'], "'self'"))
+    assert.ok(allows(csp['connect-src'], new URL('https://api.9line.dev/api/analytics/site-config').origin))
+    assert.ok(allows(csp['connect-src'], 'https://www.google-analytics.com'))
+    assert.ok(allows(csp['connect-src'], 'https://region1.google-analytics.com'))
   }
 })
 
