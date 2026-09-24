@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import vm from 'node:vm'
@@ -72,3 +73,14 @@ for (const [name, fixture, expected] of cases) {
     assert.equal(Object.values(mounted.posthogNativeCapture).every((value) => value === false), true)
   })
 }
+
+test('canonical native asset and existing site-config proxy are ready', () => {
+  const asset = readFileSync('public/gcs-analytics-native.js')
+  assert.equal(asset.length, 419487)
+  assert.equal(createHash('sha256').update(asset).digest('hex'), 'd834ad5d6d7849fb7ffabd6f2ac8a72d441c3b65a0442ca84749892678dd4cfb')
+  const { rewrites } = JSON.parse(readFileSync('vercel.json', 'utf8'))
+  assert.deepEqual(rewrites[0], {
+    source: '/api/analytics/site-config',
+    destination: 'https://api.9line.dev/api/analytics/site-config',
+  })
+})
