@@ -22,11 +22,11 @@ jobs:
         with:
           persist-credentials: false
 
-      # No engines / .nvmrc / vercel.json Node setting in this repo; 22 matches
-      # the local Node used to run this suite.
+      # Matches the Vercel project's Node version (24.x in project settings);
+      # the repo itself sets no engines / .nvmrc / vercel.json Node version.
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       # Tests import only node: built-ins and repo files, so no install step.
       - name: Run tests
