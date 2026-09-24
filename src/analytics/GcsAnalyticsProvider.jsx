@@ -24,6 +24,35 @@ const firstPartyEndpoint = (value) => {
   return configured
 }
 
+const readConsentState = () => {
+  try {
+    const cookies = document.cookie.split(';').map((entry) => entry.trim())
+    const hasSavedValue = (key, deniedValues) => [
+      window.localStorage.getItem(key),
+      ...cookies
+        .filter((entry) => entry.startsWith(`${key}=`))
+        .map((entry) => decodeURIComponent(entry.slice(key.length + 1))),
+    ].some((value) => deniedValues.includes(value?.trim().toLowerCase()))
+    const posthogKey = env.VITE_GCS_POSTHOG_KEY || env.VITE_POSTHOG_KEY
+    const gaId = env.VITE_GA_ID || env.VITE_GCS_GA4_MEASUREMENT_ID
+
+    // Check both stores before the legacy runtime can overwrite a native opt-out.
+    if (
+      hasSavedValue('gcs_consent_analytics', ['denied', 'essential_only']) ||
+      hasSavedValue('cookie_consent', ['no']) ||
+      (posthogKey && hasSavedValue(`__ph_opt_in_out_${posthogKey}`, ['0'])) ||
+      window.posthog?.has_opted_out_capturing?.() === true ||
+      (gaId && window[`ga-disable-${gaId}`] === true)
+    ) return 'denied'
+  } catch {
+    // An unreadable store may contain a saved denial.
+    return 'denied'
+  }
+
+  // This is the existing runtime policy, not a persisted visitor choice.
+  return env.VITE_GCS_ANALYTICS_CONSENT_STATE || 'accepted_override'
+}
+
 export default function GcsAnalyticsProvider() {
   useEffect(() => {
     const siteId = env.VITE_GCS_SITE_ID
@@ -63,7 +92,7 @@ export default function GcsAnalyticsProvider() {
         ga4_extended_events_enabled: readBool(env.VITE_GCS_GA4_EXTENDED_EVENTS_ENABLED, true),
         quality_events_enabled: readBool(env.VITE_GCS_QUALITY_EVENTS_ENABLED, true),
       },
-      consentState: env.VITE_GCS_ANALYTICS_CONSENT_STATE || 'accepted_override',
+      consentState: readConsentState(),
       gaId: env.VITE_GA_ID || env.VITE_GCS_GA4_MEASUREMENT_ID,
       ga4MeasurementId: env.VITE_GA_ID || env.VITE_GCS_GA4_MEASUREMENT_ID,
       globalId: env.VITE_GCS_GLOBAL_ID || undefined,
