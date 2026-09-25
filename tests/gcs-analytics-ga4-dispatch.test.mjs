@@ -34,7 +34,7 @@ test('Roadrunner loads the canonical native runtime through the same-origin Post
   assert.equal(DEFAULT_POSTHOG_HOST, '/_gcs/e')
   assert.match(adapter, /posthogHost:\s*clean\(env\.VITE_GCS_POSTHOG_HOST\)\s*\|\|\s*clean\(env\.VITE_POSTHOG_HOST\)\s*\|\|\s*DEFAULT_POSTHOG_HOST/)
   assert.equal(NATIVE_RUNTIME_SRC, '/gcs-analytics-native.js')
-  assert.equal(NATIVE_RUNTIME_VERSION, 'gcs-analytics-native@d834ad5d')
+  assert.equal(NATIVE_RUNTIME_VERSION, 'gcs-analytics-native@e538372b')
 })
 
 test('latest GCS analytics runtime can attach attribution and template metadata', () => {

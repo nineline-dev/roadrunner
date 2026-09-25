@@ -8213,8 +8213,154 @@ var GcsAnalyticsNativeRuntime = (() => {
     return inFlight;
   };
 
+  // src/siteAnalyticsGa4Extended.ts
+  var GA4_EXTENDED_CTA_SELECTOR = '[data-track="cta_clicked"], [data-cta-id]';
+  var SCROLL_DEPTH_THRESHOLDS = [25, 50, 75, 100];
+  var VIDEO_PROGRESS_THRESHOLDS = [25, 50, 75];
+  var ID_PATTERN = /^[a-z0-9_]{3,96}$/;
+  var FIELD_PATTERN = /^[A-Za-z0-9_.:[\]-]{1,64}$/;
+  var CONTACT_LIKE = /@|%40|\d{7,}|\(?\d{3}\)?(?:[\s.-]|%20)\d{3}(?:[\s.-]|%20)\d{4}/i;
+  var VALIDITY_KEYS = [
+    "valueMissing",
+    "typeMismatch",
+    "patternMismatch",
+    "tooLong",
+    "tooShort",
+    "rangeUnderflow",
+    "rangeOverflow",
+    "stepMismatch",
+    "badInput",
+    "customError"
+  ];
+  var resolveGa4ExtendedEventsEnabled = (config) => typeof config.ga4ExtendedEventsEnabled === "boolean" ? config.ga4ExtendedEventsEnabled : config.profile?.ga4_extended_events_enabled === true;
+  var validId = (value) => {
+    const trimmed = typeof value === "string" ? value.trim() : "";
+    return ID_PATTERN.test(trimmed) ? trimmed : void 0;
+  };
+  var textSlug = (text) => {
+    const raw = (text ?? "").trim();
+    if (!raw || CONTACT_LIKE.test(raw.replace(/[\s().+-]/g, ""))) return void 0;
+    return validId(raw.toLowerCase().replace(/[^a-z0-9]+/g, "_").slice(0, 96).replace(/^_+|_+$/g, ""));
+  };
+  var markerId = (element, ...extra) => ["data-cta-id", "data-track-id", "data-track-cta-location", ...extra].map((name) => validId(element.getAttribute(name))).find(Boolean);
+  var safePagePath = (pathname) => (pathname || "/").split("/").map((segment) => CONTACT_LIKE.test(segment) ? ":redacted" : segment).join("/");
+  var buildGa4ExtendedClickEvent = (target, pagePath) => {
+    if (!target || typeof target.closest !== "function") return null;
+    const link = target.closest("a[href]");
+    const href = (link?.getAttribute("href") ?? "").trim().toLowerCase();
+    const method = href.startsWith("mailto:") ? "mailto" : href.startsWith("tel:") ? "tel" : null;
+    if (link && method) {
+      const id2 = markerId(link, method === "mailto" ? "data-track-email-click-target" : "data-track-phone-click-target");
+      return {
+        name: method === "mailto" ? "email_clicked" : "phone_clicked",
+        properties: { method, ...id2 ? { cta_id: id2 } : {}, page_path: pagePath }
+      };
+    }
+    const cta = target.closest(GA4_EXTENDED_CTA_SELECTOR);
+    if (!cta) return null;
+    const location2 = validId(cta.getAttribute("data-track-cta-location"));
+    const id = markerId(cta) ?? textSlug(cta.textContent);
+    return {
+      name: "cta_clicked",
+      properties: { ...id ? { cta_id: id } : {}, ...location2 ? { cta_location: location2 } : {}, page_path: pagePath }
+    };
+  };
+  var nextScrollDepthThresholds = (percent, fired) => SCROLL_DEPTH_THRESHOLDS.filter((threshold) => percent >= threshold && !fired.has(threshold));
+  var measureScrollPercent = (win, doc) => {
+    const height = Math.max(doc.documentElement?.scrollHeight ?? 0, doc.body?.scrollHeight ?? 0);
+    if (!height) return 0;
+    const bottom = (win.scrollY ?? 0) + (win.innerHeight ?? 0);
+    return bottom >= height - 2 ? 100 : bottom / height * 100;
+  };
+  var buildFormValidationErrorEvent = (field, pagePath) => {
+    if (!field || typeof field.getAttribute !== "function") return null;
+    const fieldName = [field.getAttribute("name"), field.getAttribute("id")].map((value) => value?.trim()).find((value) => value && FIELD_PATTERN.test(value) && !CONTACT_LIKE.test(value));
+    if (!fieldName) return null;
+    const errorType = VALIDITY_KEYS.find((key) => field.validity?.[key] === true);
+    return { name: "form_validation_error", properties: { field_name: fieldName, ...errorType ? { error_type: errorType } : {}, page_path: pagePath } };
+  };
+  var buildVideoEvents = (video, type, fired, pagePath) => {
+    if (typeof video?.hasAttribute !== "function" || !video.hasAttribute("controls")) return [];
+    const videoId = validId(video.getAttribute("data-video-id")) ?? validId(video.getAttribute("id"));
+    const base = { ...videoId ? { video_id: videoId } : {}, page_path: pagePath };
+    const once = (key) => fired.has(key) ? false : (fired.add(key), true);
+    if (type === "play") return once("start") ? [{ name: "video_started", properties: base }] : [];
+    if (type === "ended") return once("complete") ? [{ name: "video_completed", properties: base }] : [];
+    if (type !== "timeupdate" || !(Number(video.duration) > 0) || !Number.isFinite(video.duration)) return [];
+    const percent = Number(video.currentTime) / Number(video.duration) * 100;
+    return VIDEO_PROGRESS_THRESHOLDS.filter((threshold) => percent >= threshold && once(`p${threshold}`)).map((threshold) => ({ name: "video_progressed", properties: { ...base, video_percent: threshold } }));
+  };
+  var mountGa4ExtendedEvents = ({ win, doc, emit, isConsentGranted }) => {
+    if (typeof doc?.addEventListener !== "function") return Object.assign(() => void 0, { reattach: () => void 0 });
+    const pagePath = () => safePagePath(win.location?.pathname);
+    const send = (event) => {
+      if (!event) return;
+      try {
+        emit(event);
+      } catch {
+      }
+    };
+    let scrollPath = pagePath();
+    let scrollFired = /* @__PURE__ */ new Set();
+    let scrollPending = false;
+    let attached = false;
+    const videoFired = /* @__PURE__ */ new WeakMap();
+    const onClick = (event) => {
+      if (event.isTrusted === false || !isConsentGranted()) return;
+      send(buildGa4ExtendedClickEvent(event.target, pagePath()));
+    };
+    const measureScroll = () => {
+      scrollPending = false;
+      if (!attached || !isConsentGranted()) return;
+      const path = pagePath();
+      if (path !== scrollPath) [scrollPath, scrollFired] = [path, /* @__PURE__ */ new Set()];
+      for (const threshold of nextScrollDepthThresholds(measureScrollPercent(win, doc), scrollFired)) {
+        scrollFired.add(threshold);
+        send({ name: "scroll_depth", properties: { percent_scrolled: threshold, page_path: path } });
+      }
+    };
+    const onScroll = () => {
+      if (scrollPending) return;
+      scrollPending = true;
+      if (typeof win.requestAnimationFrame === "function") win.requestAnimationFrame(measureScroll);
+      else setTimeout(measureScroll, 150);
+    };
+    const onInvalid = (event) => {
+      if (isConsentGranted()) send(buildFormValidationErrorEvent(event.target, pagePath()));
+    };
+    const onMedia = (event) => {
+      const video = event.target;
+      if (!isConsentGranted() || String(video?.tagName ?? "").toUpperCase() !== "VIDEO") return;
+      const fired = videoFired.get(video) ?? /* @__PURE__ */ new Set();
+      videoFired.set(video, fired);
+      buildVideoEvents(video, event.type, fired, pagePath()).forEach(send);
+    };
+    const docListeners = [
+      ["click", onClick],
+      ["invalid", onInvalid],
+      ["play", onMedia],
+      ["timeupdate", onMedia],
+      ["ended", onMedia]
+    ];
+    const attach = () => {
+      if (attached) return;
+      attached = true;
+      for (const [type, listener] of docListeners) doc.addEventListener?.(type, listener, true);
+      win.addEventListener?.("scroll", onScroll, { passive: true });
+    };
+    const detach = () => {
+      if (!attached) return;
+      attached = false;
+      for (const [type, listener] of docListeners) doc.removeEventListener?.(type, listener, true);
+      win.removeEventListener?.("scroll", onScroll);
+    };
+    attach();
+    return Object.assign(detach, { reattach: attach });
+  };
+
   // src/siteAnalyticsRuntime.ts
   var noopValidation = { valid: true, errors: [] };
+  var extendedEventsByHandle = /* @__PURE__ */ new WeakMap();
   var canUseBrowser = () => typeof window !== "undefined" && typeof document !== "undefined";
   var resolveEnvironment = (config) => {
     if (config.environment === "production" || config.environment === "preview" || config.environment === "staging" || config.environment === "development" || config.environment === "dev_acceptance") {
@@ -8363,6 +8509,7 @@ var GcsAnalyticsNativeRuntime = (() => {
   var mountSiteAnalytics = (config) => {
     if (!canUseBrowser() || !config.profile.site_id) return createNoopHandle(config.consentState);
     if (window.__GCS_ANALYTICS_RUNTIME__) {
+      extendedEventsByHandle.get(window.__GCS_ANALYTICS_RUNTIME__)?.reattach();
       window.gcsAnalytics = window.__GCS_ANALYTICS_RUNTIME__;
       return window.__GCS_ANALYTICS_RUNTIME__;
     }
@@ -8376,11 +8523,22 @@ var GcsAnalyticsNativeRuntime = (() => {
     const scope = buildProviderScope(runtimeConfig);
     if (!scope) return createNoopHandle(runtimeConfig.consentState);
     let consentState = runtimeConfig.consentState ?? "accepted_override";
-    mountGa4(runtimeConfig.gaId ?? runtimeConfig.ga4MeasurementId, scope, runtimeConfig.consentState);
+    const ga4MeasurementId = runtimeConfig.gaId ?? runtimeConfig.ga4MeasurementId;
+    mountGa4(ga4MeasurementId, scope, runtimeConfig.consentState);
     const posthogMounted = mountPosthog(runtimeConfig, scope);
+    const extendedEvents = resolveGa4ExtendedEventsEnabled(runtimeConfig) ? mountGa4ExtendedEvents({
+      win: window,
+      doc: document,
+      isConsentGranted: () => isSiteAnalyticsVendorConsentGranted(consentState),
+      emit: ({ name, properties }) => {
+        if (ga4MeasurementId) window.gtag?.("event", name, { ...properties, send_to: ga4MeasurementId });
+        if (posthogMounted) eu.capture(name, properties);
+      }
+    }) : void 0;
     let liveConfigHandle;
     const handle = {
       cleanup: () => {
+        extendedEvents?.();
         if (window.gcsAnalytics === handle) delete window.gcsAnalytics;
       },
       getConsentState: () => consentState,
@@ -8439,6 +8597,7 @@ var GcsAnalyticsNativeRuntime = (() => {
         if (!event.persisted) liveConfigHandle?.stop();
       });
     }
+    if (extendedEvents) extendedEventsByHandle.set(handle, extendedEvents);
     window.gcsAnalytics = handle;
     window.__GCS_ANALYTICS_RUNTIME__ = handle;
     return handle;

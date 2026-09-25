@@ -21,6 +21,7 @@ const expectedScope = {
   page_id: 'fixture-site',
   site_stage: 'managed_prod',
   environment: 'production',
+  template_id: 'roadrunner-media-vite',
 }
 
 test('the host allow-list is exactly the two production hosts', () => {
@@ -76,6 +77,7 @@ for (const hostname of ['roadrunner.media', 'www.roadrunner.media']) {
         quality_events_enabled: true,
       },
       businessId: ROADRUNNER_BUSINESS_ID,
+      templateId: 'roadrunner-media-vite',
       pageId: 'fixture-site',
       siteStage: 'managed_prod',
       environment: 'production',
@@ -119,7 +121,14 @@ test('legacy key and host names still configure the vendors', () => {
   assert.equal(config.ga4MeasurementId, 'G-LEGACY')
 })
 
-test('canonical runtime tags every provider event with the six scope keys', () => {
+test('the baked identity carries the registry template id', () => {
+  const config = buildNativeAnalyticsConfig(baseEnv)
+  assert.equal(config.templateId, 'roadrunner-media-vite')
+  assert.equal(runAdapter().win.__GCS_ANALYTICS_CONFIG__.templateId, 'roadrunner-media-vite')
+  assert.equal(loadRuntimeSections().buildProviderScope(config).template_id, 'roadrunner-media-vite')
+})
+
+test('canonical runtime tags every provider event with the six scope keys and template_id', () => {
   const runtime = loadRuntimeSections()
   const config = runAdapter().win.__GCS_ANALYTICS_CONFIG__
   assert.deepEqual(plain(runtime.buildProviderScope(config)), expectedScope)

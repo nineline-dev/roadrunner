@@ -1,15 +1,16 @@
 // Roadrunner adapter for the canonical GCS native analytics runtime.
 //
 // public/gcs-analytics-native.js is byte-identical to the GCS build of
-// packages/analytics/standalone/gcs-analytics-native.js (sha256 d834ad5d...). It mounts
+// packages/analytics/standalone/gcs-analytics-native.js (sha256 e538372b...). It mounts
 // itself from window.__GCS_ANALYTICS_CONFIG__, sends PostHog's own $pageview and GA4's own
-// page_view, tags every event with the six scope keys below, and reads the site's live
-// product switches from /api/analytics/site-config. Keep this file to site configuration.
+// page_view, tags every event with the six scope keys below plus template_id, and reads the
+// site's live product switches from /api/analytics/site-config. Keep this file to site
+// configuration.
 
 export const NATIVE_RUNTIME_ID = 'gcs-analytics-runtime'
 export const NATIVE_RUNTIME_SRC = '/gcs-analytics-native.js'
 // Marker for bundle and page checks; the runtime does not attach it to events.
-export const NATIVE_RUNTIME_VERSION = 'gcs-analytics-native@d834ad5d'
+export const NATIVE_RUNTIME_VERSION = 'gcs-analytics-native@e538372b'
 
 // Production events only: previews, localhost and every other host load nothing.
 // One Vercel project serves this build and roadrunner.media is a project-level 308 redirect
@@ -21,6 +22,9 @@ export const PRODUCTION_HOSTS = ['roadrunner.media', 'www.roadrunner.media']
 // Registry business of the published www.roadrunner.media site (identity authority, 2026-09-24).
 // The site id itself comes from VITE_GCS_SITE_ID so the operator controls it per environment.
 export const ROADRUNNER_BUSINESS_ID = '1bee7396-4dfd-44b1-8728-69a6f6ba4629'
+// Registry template of the published www.roadrunner.media site (generated_sites.templateId,
+// read-only readback 2026-09-25). The runtime sends it as template_id with the scope keys.
+export const TEMPLATE_ID = 'roadrunner-media-vite'
 export const SITE_STAGE = 'managed_prod'
 export const ENVIRONMENT = 'production'
 export const LIVE_CONFIG_URL = 'https://api.9line.dev/api/analytics/site-config'
@@ -33,8 +37,9 @@ const clean = (value) => (typeof value === 'string' ? value.trim() : '')
 // Roadrunner profile as served today (capabilities, packs, GA4 extended and quality on), with
 // replay OFF (Josh, 2026-09-24). Replay is OFF in the build and is not env-controlled: only an
 // audited profile change served by the live endpoint can enable it. The native runtime acts
-// on site_id, customer_account_id and replay_enabled; the other fields are the profile carried
-// as data (it sends no pack or quality events).
+// on site_id, customer_account_id, replay_enabled and ga4_extended_events_enabled (the GA4
+// extended events: cta, email, phone, scroll, form validation, video); the other fields are
+// the profile carried as data (it sends no pack or quality events).
 export const buildRoadrunnerProfile = (siteId, customerAccountId) => ({
   site_id: siteId,
   customer_account_id: customerAccountId,
@@ -73,6 +78,7 @@ export const buildNativeAnalyticsConfig = (env) => {
   return {
     profile: buildRoadrunnerProfile(siteId, customerAccountId),
     businessId: ROADRUNNER_BUSINESS_ID,
+    templateId: TEMPLATE_ID,
     pageId: siteId,
     siteStage: SITE_STAGE,
     environment: ENVIRONMENT,
