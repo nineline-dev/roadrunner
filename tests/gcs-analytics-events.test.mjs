@@ -1,250 +1,104 @@
-import assert from 'node:assert/strict'
-import { EventEmitter } from 'node:events'
 import test from 'node:test'
+import assert from 'node:assert/strict'
 import handler from '../api/gcs-analytics-events.js'
 
-const makeRes = () => {
-  const res = {
-    headers: {},
-    body: '',
-    statusCode: 200,
-    setHeader(key, value) {
-      this.headers[key.toLowerCase()] = value
-      return this
-    },
-    status(code) {
-      this.statusCode = code
-      return this
-    },
-    end(value = '') {
-      this.body = value
-      return this
-    },
-  }
-  return res
+const originalEnv = process.env
+const originalFetch = globalThis.fetch
+
+// Any property read on the request fails the test: the retired endpoint must not look at it.
+const req = (request) => new Proxy(request, {
+  get(_target, key) {
+    assert.fail(`the retired endpoint must not read the request (${String(key)})`)
+  },
+})
+
+const res = () => ({
+  statusCode: 200,
+  headers: {},
+  body: '',
+  status(code) {
+    this.statusCode = code
+    return this
+  },
+  setHeader(name, value) {
+    this.headers[name.toLowerCase()] = value
+    return this
+  },
+  end(body = '') {
+    this.body = body
+    return this
+  },
+})
+
+// Every value the old function forwarded with, so a regression would have what it needs.
+// Reads are recorded while the handler runs; the retired endpoint must make none.
+const legacyEnv = {
+  GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.9line.dev/api/analytics/events',
+  GCS_ANALYTICS_INGEST_TOKEN: 'token_test',
+  GCS_ANALYTICS_SITE_ID: 'roadrunner_site_test',
+  GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'customer_test',
+  GCS_ANALYTICS_GLOBAL_ID: 'roadrunner-media-production',
+  GCS_ANALYTICS_CANONICAL_ORIGIN: 'https://www.roadrunner.media',
+  GCS_ANALYTICS_ALLOWED_ORIGINS: 'https://www.roadrunner.media',
+  GCS_POSTHOG_PROJECT_API_KEY: 'phc_test',
+  GCS_POSTHOG_HOST: 'https://us.i.posthog.com',
 }
 
-const withEnv = async (env, fn) => {
-  const previous = {}
-  for (const key of Object.keys(env)) {
-    previous[key] = process.env[key]
-    process.env[key] = env[key]
-  }
-  try {
-    await fn()
-  } finally {
-    for (const key of Object.keys(env)) {
-      if (previous[key] === undefined) delete process.env[key]
-      else process.env[key] = previous[key]
+test.afterEach(() => {
+  process.env = originalEnv
+  globalThis.fetch = originalFetch
+})
+
+const page = 'https://www.roadrunner.media/'
+const legacyRequests = [
+  ['legacy page_view', { method: 'POST', body: { event_name: 'page_view', payload: { page_url: page, event_id: 'page-event' } } }],
+  ['legacy cta_clicked', {
+    method: 'POST',
+    body: { event_name: 'cta_clicked', event_class: 'CONVERSION', payload: { page_url: page, cta_location: 'hero' } },
+  }],
+  ['legacy email_clicked', { method: 'POST', body: { event_name: 'email_clicked', payload: { page_url: page } } }],
+  ['legacy batch envelope', {
+    method: 'POST',
+    body: { events: [
+      { event_name: 'page_view', payload: { page_url: page } },
+      { event_name: 'cta_clicked', payload: { page_url: page } },
+      { event_name: 'email_clicked', payload: { page_url: page } },
+    ] },
+  }],
+  ['raw string body', { method: 'POST', body: JSON.stringify({ event_name: 'page_view', payload: {} }) }],
+  ['unapproved origin', { method: 'POST', headers: { origin: 'https://example.invalid' }, body: { event_name: 'page_view' } }],
+  ['preflight', { method: 'OPTIONS' }],
+  ['GET', { method: 'GET' }],
+  ['PUT', { method: 'PUT', body: { event_name: 'page_view' } }],
+  ['DELETE', { method: 'DELETE' }],
+]
+
+for (const [name, request] of legacyRequests) {
+  test(`retired endpoint answers 410 and forwards nothing: ${name}`, async () => {
+    let fetchCalls = 0
+    globalThis.fetch = async () => {
+      fetchCalls++
+      throw new Error('the retired endpoint must not forward to the GCS ingest or PostHog')
     }
-  }
+    const envReads = []
+    process.env = new Proxy({ ...originalEnv, ...legacyEnv }, {
+      get(target, key) {
+        if (typeof key === 'string' && key in legacyEnv) envReads.push(key)
+        return target[key]
+      },
+    })
+
+    const response = res()
+    try {
+      await handler(req({ headers: { origin: 'https://www.roadrunner.media', host: 'www.roadrunner.media' }, ...request }), response)
+    } finally {
+      process.env = originalEnv
+    }
+
+    assert.equal(response.statusCode, 410)
+    assert.equal(response.headers['content-type'], 'application/json')
+    assert.deepEqual(JSON.parse(response.body), { ok: false, error: 'gone' })
+    assert.equal(fetchCalls, 0)
+    assert.deepEqual(envReads, [])
+  })
 }
-
-test('forwards analytics body with server-side ingest token only', async () => {
-  await withEnv(
-    {
-      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
-      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
-      GCS_ANALYTICS_SITE_ID: 'server-site-id',
-      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
-      GCS_ANALYTICS_GLOBAL_ID: 'server-global-id',
-      GCS_POSTHOG_HOST: 'https://posthog.example.test',
-      GCS_POSTHOG_PROJECT_API_KEY: 'posthog-project-key',
-    },
-    async () => {
-      const calls = []
-      const previousFetch = globalThis.fetch
-      globalThis.fetch = async (...args) => {
-        calls.push(args)
-        return { ok: true, status: 202 }
-      }
-      try {
-        const req = new EventEmitter()
-        req.method = 'POST'
-        req.headers = { host: 'www.roadrunner.media', origin: 'https://www.roadrunner.media' }
-        req.body = {
-          event_name: 'page_view',
-          event_class: 'DIAGNOSTIC',
-          source_of_truth: 'attacker',
-          unexpected: 'drop-me',
-          payload: {
-            event_id: 'event-1',
-            page_url: 'https://www.roadrunner.media/?proof=1',
-            site_id: 'attacker-site-id',
-            customer_account_id: 'attacker-customer-id',
-            global_id: 'attacker-global-id',
-            email: 'drop@example.test',
-          },
-        }
-        const res = makeRes()
-        await handler(req, res)
-
-        assert.equal(res.statusCode, 202)
-        assert.equal(calls.length, 2)
-        assert.equal(calls[0][0], 'https://api.example.test/api/analytics/events')
-        assert.equal(calls[0][1].headers['x-gcs-analytics-token'], 'server-only-token')
-        const forwarded = JSON.parse(calls[0][1].body)
-        assert.equal(forwarded.event_name, 'page_view')
-        assert.equal(forwarded.source_of_truth, 'browser')
-        assert.equal(forwarded.payload.site_id, 'server-site-id')
-        assert.equal(forwarded.payload.customer_account_id, 'server-customer-id')
-        assert.equal(forwarded.payload.global_id, 'server-global-id')
-        assert.equal(forwarded.payload.canonical_origin, 'https://www.roadrunner.media')
-        assert.equal(forwarded.unexpected, undefined)
-        assert.equal(calls[1][0], 'https://posthog.example.test/capture/')
-        const posthog = JSON.parse(calls[1][1].body)
-        assert.equal(posthog.api_key, 'posthog-project-key')
-        assert.equal(posthog.event, 'page_view')
-        assert.equal(posthog.properties.site_id, 'server-site-id')
-        assert.equal(posthog.properties.customer_account_id, 'server-customer-id')
-        assert.equal(posthog.properties.global_id, 'server-global-id')
-        assert.equal(posthog.properties.gcs_event_name, 'page_view')
-        assert.equal(posthog.properties.gcs_layer, 'gcs_canonical')
-        assert.equal(posthog.properties.$groups.customer_account, 'server-customer-id')
-        assert.equal(posthog.properties.$groups.global_entity, 'server-global-id')
-        assert.equal(posthog.properties.email, undefined)
-      } finally {
-        globalThis.fetch = previousFetch
-      }
-    }
-  )
-})
-
-test('accepts batched first-party events including email clicks', async () => {
-  await withEnv(
-    {
-      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
-      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
-      GCS_ANALYTICS_SITE_ID: 'server-site-id',
-      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
-    },
-    async () => {
-      const calls = []
-      const previousFetch = globalThis.fetch
-      globalThis.fetch = async (...args) => {
-        calls.push(args)
-        return { ok: true, status: 202 }
-      }
-      try {
-        const req = new EventEmitter()
-        req.method = 'POST'
-        req.headers = { host: 'www.roadrunner.media', origin: 'https://www.roadrunner.media' }
-        req.body = {
-          events: [
-            { event_name: 'page_view', payload: { event_id: 'event-1', page_url: 'https://www.roadrunner.media/' } },
-            { event_name: 'email_clicked', payload: { event_id: 'event-2', page_url: 'https://www.roadrunner.media/' } },
-          ],
-        }
-        const res = makeRes()
-
-        await handler(req, res)
-
-        assert.equal(res.statusCode, 202)
-        assert.deepEqual(calls.map((call) => JSON.parse(call[1].body).event_name), ['page_view', 'email_clicked'])
-        assert.equal(JSON.parse(res.body).accepted, 2)
-      } finally {
-        globalThis.fetch = previousFetch
-      }
-    }
-  )
-})
-
-test('rejects cross-origin browser writes', async () => {
-  const req = new EventEmitter()
-  req.method = 'POST'
-  req.headers = { host: 'www.roadrunner.media', origin: 'https://attacker.example' }
-  req.body = { events: [] }
-  const res = makeRes()
-
-  await handler(req, res)
-
-  assert.equal(res.statusCode, 403)
-  assert.match(res.body, /origin_not_allowed/)
-})
-
-test('allows approved brownfield origins from server env', async () => {
-  await withEnv(
-    {
-      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
-      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
-      GCS_ANALYTICS_SITE_ID: 'server-site-id',
-      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
-      GCS_ANALYTICS_ALLOWED_ORIGINS: 'customer.example',
-    },
-    async () => {
-      const calls = []
-      const previousFetch = globalThis.fetch
-      globalThis.fetch = async (...args) => {
-        calls.push(args)
-        return { ok: true, status: 202 }
-      }
-      try {
-        const req = new EventEmitter()
-        req.method = 'POST'
-        req.headers = { host: 'preview.example', origin: 'https://customer.example' }
-        req.body = {
-          event_name: 'cta_clicked',
-          payload: {
-            event_id: 'event-1',
-            page_url: 'https://customer.example/?proof=1',
-          },
-        }
-        const res = makeRes()
-
-        await handler(req, res)
-
-        assert.equal(res.statusCode, 202)
-        assert.equal(calls.length, 1)
-        const forwarded = JSON.parse(calls[0][1].body)
-        assert.equal(forwarded.event_name, 'cta_clicked')
-        assert.equal(forwarded.payload.site_id, 'server-site-id')
-      } finally {
-        globalThis.fetch = previousFetch
-      }
-    }
-  )
-})
-
-test('rejects writes without browser origin', async () => {
-  const req = new EventEmitter()
-  req.method = 'POST'
-  req.headers = { host: 'www.roadrunner.media' }
-  req.body = { event_name: 'page_view', payload: {} }
-  const res = makeRes()
-
-  await handler(req, res)
-
-  assert.equal(res.statusCode, 403)
-  assert.match(res.body, /origin_not_allowed/)
-})
-
-test('rejects unsupported events before proxying with server token', async () => {
-  await withEnv(
-    {
-      GCS_ANALYTICS_INGEST_ENDPOINT: 'https://api.example.test/api/analytics/events',
-      GCS_ANALYTICS_INGEST_TOKEN: 'server-only-token',
-      GCS_ANALYTICS_SITE_ID: 'server-site-id',
-      GCS_ANALYTICS_CUSTOMER_ACCOUNT_ID: 'server-customer-id',
-    },
-    async () => {
-      const previousFetch = globalThis.fetch
-      globalThis.fetch = async () => {
-        throw new Error('fetch should not run')
-      }
-      try {
-        const req = new EventEmitter()
-        req.method = 'POST'
-        req.headers = { host: 'www.roadrunner.media', origin: 'https://www.roadrunner.media' }
-        req.body = { event_name: 'purchase', payload: { page_url: 'https://www.roadrunner.media/' } }
-        const res = makeRes()
-
-        await handler(req, res)
-
-        assert.equal(res.statusCode, 400)
-        assert.match(res.body, /event_not_allowed/)
-      } finally {
-        globalThis.fetch = previousFetch
-      }
-    }
-  )
-})

@@ -2,23 +2,39 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import test from 'node:test'
 
+import { DEFAULT_POSTHOG_HOST, NATIVE_RUNTIME_SRC, NATIVE_RUNTIME_VERSION } from '../src/analytics/gcsNativeAnalytics.js'
+
 const providerSource = () => fs.readFileSync('src/analytics/GcsAnalyticsProvider.jsx', 'utf8')
+const adapterSource = () => fs.readFileSync('src/analytics/gcsNativeAnalytics.js', 'utf8')
+const nativeAsset = () => fs.readFileSync('public/gcs-analytics-native.js', 'utf8')
 const vendorSources = () => [
   fs.readFileSync('vendor/gcs-analytics/dist/index.js', 'utf8'),
   fs.readFileSync('vendor/gcs-analytics/dist/index.mjs', 'utf8'),
 ]
+const cspDirectives = () => {
+  const vercel = JSON.parse(fs.readFileSync('vercel.json', 'utf8'))
+  const policies = vercel.headers
+    .flatMap((entry) => entry.headers)
+    .filter((header) => header.key === 'Content-Security-Policy')
+    .map((header) => header.value)
+  assert.equal(policies.length, 2, 'standalone and 9Line embed policies')
+  return policies.map((policy) => Object.fromEntries(policy.split(';').map((part) => {
+    const [name, ...sources] = part.trim().split(/\s+/)
+    return [name, sources]
+  })))
+}
 
-test('Roadrunner analytics provider routes browser vendor delivery through GA4 and first-party proxy', () => {
-  const source = providerSource()
-  const envExample = fs.readFileSync('.env.example', 'utf8')
+test('Roadrunner loads the canonical native runtime through the same-origin PostHog proxy', () => {
+  const provider = providerSource()
+  const adapter = adapterSource()
 
-  assert.match(source, /mountSiteAnalytics/)
-  assert.doesNotMatch(source, /mountStorefrontAnalytics/)
-  assert.match(source, /eventSink:\s*env\.VITE_EVENT_SINK\s*\|\|\s*['"]ga4['"]/)
-  assert.match(source, /posthogHost:\s*env\.VITE_GCS_POSTHOG_HOST\s*\|\|\s*env\.VITE_POSTHOG_HOST\s*\|\|\s*['"]\/_gcs\/e['"]/)
-  assert.doesNotMatch(envExample, /^VITE_EVENT_SINK=/m)
-  assert.doesNotMatch(envExample, /^VITE_POSTHOG_KEY=/m)
-  assert.doesNotMatch(envExample, /^VITE_POSTHOG_HOST=/m)
+  assert.match(provider, /startNativeAnalytics/)
+  assert.doesNotMatch(provider + adapter, /mountSiteAnalytics|mountStorefrontAnalytics|@gcs\/analytics/)
+  assert.doesNotMatch(provider + adapter, /eventSink|firstPartyEndpoint|VITE_ANALYTICS_INGEST_ENDPOINT/)
+  assert.equal(DEFAULT_POSTHOG_HOST, '/_gcs/e')
+  assert.match(adapter, /posthogHost:\s*clean\(env\.VITE_GCS_POSTHOG_HOST\)\s*\|\|\s*clean\(env\.VITE_POSTHOG_HOST\)\s*\|\|\s*DEFAULT_POSTHOG_HOST/)
+  assert.equal(NATIVE_RUNTIME_SRC, '/gcs-analytics-native.js')
+  assert.equal(NATIVE_RUNTIME_VERSION, 'gcs-analytics-native@e538372b')
 })
 
 test('latest GCS analytics runtime can attach attribution and template metadata', () => {
@@ -30,32 +46,13 @@ test('latest GCS analytics runtime can attach attribution and template metadata'
   }
 })
 
-test('Roadrunner uses latest GCS direct GA4 collect controls instead of a local fallback', () => {
-  const source = providerSource()
+test('Roadrunner uses the native GA4 tag instead of a local collect fallback', () => {
+  const adapter = adapterSource()
+  const asset = nativeAsset()
 
-  assert.match(source, /ga4DirectCollectEnabled/)
-  assert.match(source, /ga4DirectCollectEventAllowlist/)
-  assert.doesNotMatch(source, /sendGa4PageViewFallback/)
-  assert.doesNotMatch(source, /gcs_ga4_fallback/)
-  for (const vendorSource of vendorSources()) {
-    assert.match(vendorSource, /ga4DirectCollectEnabled/)
-    assert.match(vendorSource, /google-analytics\.com\/g\/collect/)
-  }
-})
-
-test('Roadrunner analytics emits rollout attribution and routing metadata', () => {
-  const source = providerSource()
-
-  assert.match(source, /analyticsRuntimeVersion/)
-  assert.match(source, /analyticsRolloutVersion/)
-  assert.match(source, /analytics-fleet-20260702-roadrunner/)
-  assert.match(source, /roadrunner-media-vite/)
-  for (const vendorSource of vendorSources()) {
-    assert.match(vendorSource, /analytics_runtime_version/)
-    assert.match(vendorSource, /analytics_rollout_version/)
-    assert.match(vendorSource, /getEventDestinations:\s*\(eventName\)\s*=>/)
-    assert.match(vendorSource, /advancedPosthogModules/)
-  }
+  assert.doesNotMatch(adapter, /sendGa4PageViewFallback|gcs_ga4_fallback|google-analytics\.com\/g\/collect/)
+  assert.match(asset, /https:\/\/www\.googletagmanager\.com\/gtag\/js\?id=/)
+  assert.doesNotMatch(asset, /page_view/)
 })
 
 test('Roadrunner browser CSP does not allow direct PostHog traffic', () => {
@@ -66,6 +63,22 @@ test('Roadrunner browser CSP does not allow direct PostHog traffic', () => {
 
   assert.doesNotMatch(csp, /posthog\.com/)
   assert.doesNotMatch(csp, /i\.posthog\.com/)
+})
+
+test('Roadrunner browser CSP admits every origin the native runtime uses', () => {
+  // Exact source-list membership (not substring matching) for each directive.
+  const allows = (sources, source) => sources.some((entry) => entry === source)
+  for (const csp of cspDirectives()) {
+    // Runtime asset, PostHog extensions (/_gcs/e/static) and remote config are same-origin.
+    assert.ok(allows(csp['script-src'], "'self'"))
+    assert.ok(allows(csp['script-src'], 'https://www.googletagmanager.com'))
+    // PostHog (/_gcs/e) and the site-config route are same-origin; the runtime's fallback
+    // live-config URL and GA4 collection are cross-origin.
+    assert.ok(allows(csp['connect-src'], "'self'"))
+    assert.ok(allows(csp['connect-src'], new URL('https://api.9line.dev/api/analytics/site-config').origin))
+    assert.ok(allows(csp['connect-src'], 'https://www.google-analytics.com'))
+    assert.ok(allows(csp['connect-src'], 'https://region1.google-analytics.com'))
+  }
 })
 
 test('Roadrunner proxies PostHog browser traffic through same-origin Vercel rewrites', () => {
