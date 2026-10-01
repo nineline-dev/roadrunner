@@ -50,8 +50,8 @@ for (const [name, fixture, expected] of cases) {
 
 test('canonical native asset and same-origin proxy routes are ready', () => {
   const asset = readFileSync('public/gcs-analytics-native.js')
-  assert.equal(asset.length, 427631)
-  assert.equal(createHash('sha256').update(asset).digest('hex'), 'e538372ba467c245fc9c25aea0ee00fdf71a6a2a5b7c1dc96cf6135cb223fddd')
+  assert.equal(asset.length, 429056)
+  assert.equal(createHash('sha256').update(asset).digest('hex'), 'b30061335434e21baba9b49cb8756d4900472c3b35cebf9eec7eca873d91c832')
   const { rewrites } = JSON.parse(readFileSync('vercel.json', 'utf8'))
   assert.deepEqual(rewrites[0], {
     source: '/api/analytics/site-config',

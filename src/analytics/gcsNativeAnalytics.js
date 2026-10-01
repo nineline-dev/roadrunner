@@ -1,7 +1,7 @@
 // Roadrunner adapter for the canonical GCS native analytics runtime.
 //
 // public/gcs-analytics-native.js is byte-identical to the GCS build of
-// packages/analytics/standalone/gcs-analytics-native.js (sha256 e538372b...). It mounts
+// packages/analytics/standalone/gcs-analytics-native.js (sha256 b3006133...). It mounts
 // itself from window.__GCS_ANALYTICS_CONFIG__, sends PostHog's own $pageview and GA4's own
 // page_view, tags every event with the six scope keys below plus template_id, and reads the
 // site's live product switches from /api/analytics/site-config. Keep this file to site
@@ -10,7 +10,7 @@
 export const NATIVE_RUNTIME_ID = 'gcs-analytics-runtime'
 export const NATIVE_RUNTIME_SRC = '/gcs-analytics-native.js'
 // Marker for bundle and page checks; the runtime does not attach it to events.
-export const NATIVE_RUNTIME_VERSION = 'gcs-analytics-native@e538372b'
+export const NATIVE_RUNTIME_VERSION = 'gcs-analytics-native@b3006133'
 
 // Production events only: previews, localhost and every other host load nothing.
 // One Vercel project serves this build and roadrunner.media is a project-level 308 redirect
