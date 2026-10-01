@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/api/analytics/site-config",
+      "destination": "https://api.9line.dev/api/analytics/site-config"
+    },
+    {
       "source": "/api/analytics/events",
       "destination": "https://api.9line.dev/api/analytics/events"
     },
