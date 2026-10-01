@@ -1,0 +1,33 @@
+name: test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  node-test:
+    name: node --test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # Matches the Vercel project's Node version (24.x in project settings);
+      # the repo itself sets no engines / .nvmrc / vercel.json Node version.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Tests import only node: built-ins and repo files, so no install step.
+      - name: Run tests
+        run: node --test tests/*.test.mjs
